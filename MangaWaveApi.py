@@ -59,5 +59,5 @@ def getCoverImage(mangaId, coverId, size):
     
     return coverUrl
 
-title = "Naruto"
+title = "Vagabond"
 print(getManga(title))

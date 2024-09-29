@@ -4,24 +4,22 @@ import json
 
 def getMangaList():
 
+    base_url = "https://api.mangadex.org"
     manga_id = "d1a9fdeb-f713-407f-960c-8326b586e6fd"  # id do mangá do vagabond
-
     languages = ["pt-br"]
 
-    base_url = "https://api.mangadex.org"
 
     apiResponse = requests.get(
         f"{base_url}/manga/{manga_id}/feed",
-        params={"translatedLanguage[]": languages},
+        params={
+            "translatedLanguage[]": languages,
+            "order[volume]": "desc",
+            "order[chapter]": "desc"
+        },
     )
+    # https://api.mangadex.org/manga/d1a9fdeb-f713-407f-960c-8326b586e6fd/feed?translatedLanguage[]=pt-br&limit=96&includes[]=scanlation_group&includes[]=user&order[volume]=desc&order[chapter]=desc&offset=0&contentRating[]=safe&contentRating[]=suggestive&contentRating[]=erotica&contentRating[]=pornographic
 
     reorganizeManga(apiResponse.json()["data"])
-
-    # Formata o retorno de maneira legível
-
-    # formatted_output = json.dumps(apiResponse.json()["data"], indent=4)
-    
-    # formatted_output = apiResponse
 
     return reorganizeManga(apiResponse.json()["data"])
 
