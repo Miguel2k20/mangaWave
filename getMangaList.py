@@ -17,7 +17,6 @@ def getMangaList():
             "order[chapter]": "desc"
         },
     )
-    # https://api.mangadex.org/manga/d1a9fdeb-f713-407f-960c-8326b586e6fd/feed?translatedLanguage[]=pt-br&limit=96&includes[]=scanlation_group&includes[]=user&order[volume]=desc&order[chapter]=desc&offset=0&contentRating[]=safe&contentRating[]=suggestive&contentRating[]=erotica&contentRating[]=pornographic
 
     reorganizeManga(apiResponse.json()["data"])
 
