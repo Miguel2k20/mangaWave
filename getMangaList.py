@@ -5,7 +5,7 @@ import json
 def getMangaList():
 
     base_url = "https://api.mangadex.org"
-    manga_id = "d1a9fdeb-f713-407f-960c-8326b586e6fd"  # id do mangá do vagabond
+    manga_id = "275c3ee8-bdeb-4070-a333-6add23a8415a"  # id do mangá do vagabond
     languages = ["pt-br"]
 
 
