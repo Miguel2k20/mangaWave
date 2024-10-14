@@ -100,9 +100,23 @@ class main:
 
         response = response.json()
 
-        formatted_output = json.dumps(response["chapter"], indent=4)
+        response = main.pagesUrl(response["chapter"])
+
+        formatted_output = json.dumps(response, indent=4)
 
         return formatted_output
+    
+    # Essa funcao vai apenas montar a url da imagem
+    def pagesUrl(apiResponse): 
+
+        baseUrl = f"https://uploads.mangadex.org/data/{apiResponse["hash"]}/"
+
+        pagesArray = list()
+
+        for item in apiResponse["data"]:
+            pagesArray.append(f"{baseUrl}{item}")
+        
+        return pagesArray
     
 print("mangawave")
 
