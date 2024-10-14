@@ -5,9 +5,7 @@ from collections import defaultdict
 base_url = "https://api.mangadex.org"
 base_image_url = "https://uploads.mangadex.org"
 
-class main: 
-    
-    global base_url
+class MangaApiClient: 
     
     # Busca de mangás em geral
     def getManga(title):
@@ -19,7 +17,7 @@ class main:
             }
         )
 
-        customResponse = main.responseCustom(response.json())
+        customResponse = MangaApiClient.responseCustom(response.json())
 
         formatted_output = json.dumps(customResponse, indent=4)
 
@@ -39,7 +37,7 @@ class main:
             arrayMangasInfos[mangaId] = {
                 "type": item["type"],
                 "title": item["attributes"]["title"]["en"],
-                "cover_art": main.getCoverImage(mangaId, coverArtId, 256),
+                "cover_art": MangaApiClient.getCoverImage(mangaId, coverArtId, 256),
                 "status": item["attributes"]["status"],
                 "lenguangesEnsabled": item["attributes"]["availableTranslatedLanguages"]
             }
@@ -71,7 +69,7 @@ class main:
                 "order[chapter]": "desc"
             },
         )
-        return main.reorganizeManga(apiResponse.json()["data"])
+        return MangaApiClient.reorganizeManga(apiResponse.json()["data"])
     
     # Esse método vai organizar os mangás por capitulo (Isso já está sendo feito na query da api, mas fiz isso pra faciliar no meu front) 
     def reorganizeManga(mangalist):
@@ -100,7 +98,7 @@ class main:
 
         response = response.json()
 
-        response = main.pagesUrl(response["chapter"])
+        response = MangaApiClient.pagesUrl(response["chapter"])
 
         formatted_output = json.dumps(response, indent=4)
 
@@ -117,19 +115,3 @@ class main:
             pagesArray.append(f"{baseUrl}{item}")
         
         return pagesArray
-    
-print("mangawave")
-
-title = input("Fale ai o mangá que ce quer: ")
-
-print("Procurando seu manga....")
-
-print(main.getManga(title))
-
-idManga = input("Passa o id do mangá ai: ")
-
-print(main.getMangaList(idManga))
-
-idPage = input("Passa o id do captitulo ai: ")
-
-print(main.getMangasPages(idPage))
