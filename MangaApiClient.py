@@ -61,6 +61,7 @@ class MangaApiClient:
     
     # Método que busca todos os mangás disponivel do títuloda busca
     def getMangaList(manga_id):
+
         apiResponse = requests.get(
             f"{base_url}/manga/{manga_id}/feed",
             params={
@@ -69,7 +70,10 @@ class MangaApiClient:
                 "order[chapter]": "desc"
             },
         )
-        return MangaApiClient.reorganizeManga(apiResponse.json()["data"])
+        print(json.dumps(MangaApiClient.repositoryCreate(apiResponse).json(), indent=4))
+        # return MangaApiClient.repositoryCreate(apiResponse)
+    
+        # return MangaApiClient.reorganizeManga(apiResponse.json()["data"])
     
     # Esse método vai organizar os mangás por capitulo (Isso já está sendo feito na query da api, mas fiz isso pra faciliar no meu front) 
     def reorganizeManga(mangalist):
@@ -115,3 +119,18 @@ class MangaApiClient:
             pagesArray.append(f"{baseUrl}{item}")
         
         return pagesArray
+    
+    def repositoryCreate(mangalist):
+
+        mangatitle = [
+            requests.get(f"{base_url}/manga/{relation["id"]}")
+            for relation in mangalist.json()["data"][0]["relationships"] 
+            if relation["type"] == "manga"
+        ]
+
+        mangatitle = mangatitle[0].json()["data"]["attributes"]["title"]["en"].lower()
+
+        for manga in mangalist.json()["data"]:
+            manga["repository"] = f"{mangatitle}/volume{manga['attributes']['volume']}/chapter{manga['attributes']['chapter']}"
+
+        return mangalist
