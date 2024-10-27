@@ -35,14 +35,14 @@ class MangaApiClient:
             mangaId = item["id"]
 
             arrayMangasInfos[mangaId] = {
-                "type": item["type"],
-                "title": item["attributes"]["title"]["en"],
+                "type": item['type'],
+                "title": item['attributes']['title']['en'],
                 "cover_art": MangaApiClient.getCoverImage(mangaId, coverArtId, 256),
-                "status": item["attributes"]["status"],
-                "lenguangesEnsabled": item["attributes"]["availableTranslatedLanguages"]
+                "status": item['attributes']['status'],
+                "lenguangesEnsabled": item['attributes']['availableTranslatedLanguages']
             }
 
-        mangasData["data"] = arrayMangasInfos
+        mangasData['data'] = arrayMangasInfos
 
         return mangasData
     
@@ -53,7 +53,7 @@ class MangaApiClient:
             f"{base_url}/cover/{coverId}",
         ).json()
         
-        fileName = response["data"]["attributes"]["fileName"]
+        fileName = response["data"]['attributes']['fileName']
 
         coverUrl = f"{base_image_url}/covers/{mangaId}/{fileName}.{size}.jpg"
         
@@ -82,11 +82,11 @@ class MangaApiClient:
         volumes = defaultdict(list)
 
         for chapter in mangalist:
-            volume = chapter["attributes"]["volume"]
+            volume = chapter['attributes']['volume']
             volumes[volume].append(chapter)
 
         sorted_volumes = {
-            volume: sorted(chapters, key=lambda x: int(x["attributes"]["chapter"]))
+            volume: sorted(chapters, key=lambda x: int(x['attributes']['chapter']))
             for volume, chapters in sorted(volumes.items(), key=lambda x: int(x[0]))
         }
 
