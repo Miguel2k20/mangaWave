@@ -15,12 +15,16 @@ def getMangasPagesTeste():
     idPage = input("Passa o id do captitulo ai: ")
     print(MangaApiClient.getMangasPages(idPage))
 
+def pasteCreateTeste():
+    print(MangaApiClient.pasteCreate('/home/miguel/naruto/volume63/chapter601'))
+
 while True:
     print("--- Bem vindo ao ambiente de teste do mangaWave ---")
     print("1: Buscar um mangá pelo titulo")
     print("2: Buscar os capítulos relacionado ao id mangá")
     print("3: Buscar as páginas relacionadas ao capítulo do mangá")
-    print("4: Sair")
+    print("4: Criação de pasta")
+    print("5: Sair")
 
     option = int(input("Selecione o item que deseja testar: "))
 
@@ -31,6 +35,8 @@ while True:
     elif option == 3:
         getMangasPagesTeste()
     elif option == 4:
+        pasteCreateTeste()
+    elif option == 5:
         print("Até mais!")
         break
     else:

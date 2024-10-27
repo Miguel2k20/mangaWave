@@ -73,10 +73,9 @@ class MangaApiClient:
             },
         )
 
-        print(json.dumps(MangaApiClient.repositoryCreate(apiResponse), indent=4))
-        # return MangaApiClient.repositoryCreate(apiResponse)
-    
-        # return MangaApiClient.reorganizeManga(apiResponse.json()["data"])
+        responseWithRepository = MangaApiClient.repositoryCreate(apiResponse)
+
+        return json.dumps(responseWithRepository, indent=4)
     
     # Esse método vai organizar os mangás por capitulo (Isso já está sendo feito na query da api, mas fiz isso pra faciliar no meu front) 
     def reorganizeManga(mangalist):
@@ -138,3 +137,7 @@ class MangaApiClient:
             manga["repository"] = f"{desktop_path}/{mangatitle}/volume{manga['attributes']['volume']}/chapter{manga['attributes']['chapter']}"
         
         return mangalist
+    
+    def pasteCreate(mangaObject):
+        repositoryManga = mangaObject
+        return repositoryManga
