@@ -70,7 +70,8 @@ class MangaApiClient:
                 "order[chapter]": "desc"
             },
         )
-        print(json.dumps(MangaApiClient.repositoryCreate(apiResponse).json(), indent=4))
+
+        print(json.dumps(MangaApiClient.repositoryCreate(apiResponse), indent=4))
         # return MangaApiClient.repositoryCreate(apiResponse)
     
         # return MangaApiClient.reorganizeManga(apiResponse.json()["data"])
@@ -122,15 +123,17 @@ class MangaApiClient:
     
     def repositoryCreate(mangalist):
 
+        mangalist = mangalist.json()
+
         mangatitle = [
-            requests.get(f"{base_url}/manga/{relation["id"]}")
-            for relation in mangalist.json()["data"][0]["relationships"] 
-            if relation["type"] == "manga"
+            requests.get(f"{base_url}/manga/{relation['id']}")
+            for relation in mangalist['data'][0]['relationships'] 
+            if relation['type'] == 'manga'
         ]
 
-        mangatitle = mangatitle[0].json()["data"]["attributes"]["title"]["en"].lower()
+        mangatitle = mangatitle[0].json()['data']['attributes']['title']['en'].lower()
 
-        for manga in mangalist.json()["data"]:
+        for manga in mangalist["data"]:
             manga["repository"] = f"{mangatitle}/volume{manga['attributes']['volume']}/chapter{manga['attributes']['chapter']}"
-
+        
         return mangalist
