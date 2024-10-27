@@ -1,9 +1,11 @@
 import requests
 import json
+from pathlib import Path
 from collections import defaultdict
 
 base_url = "https://api.mangadex.org"
 base_image_url = "https://uploads.mangadex.org"
+desktop_path = Path.home()
 
 class MangaApiClient: 
     
@@ -122,7 +124,6 @@ class MangaApiClient:
         return pagesArray
     
     def repositoryCreate(mangalist):
-
         mangalist = mangalist.json()
 
         mangatitle = [
@@ -134,6 +135,6 @@ class MangaApiClient:
         mangatitle = mangatitle[0].json()['data']['attributes']['title']['en'].lower()
 
         for manga in mangalist["data"]:
-            manga["repository"] = f"{mangatitle}/volume{manga['attributes']['volume']}/chapter{manga['attributes']['chapter']}"
+            manga["repository"] = f"{desktop_path}/{mangatitle}/volume{manga['attributes']['volume']}/chapter{manga['attributes']['chapter']}"
         
         return mangalist
