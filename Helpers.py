@@ -76,7 +76,7 @@ class Helpers:
         
         return pagesArray
     
-    def repositoryCreate(mangalist):
+    def diretoryCreate(mangalist):
         mangalist = mangalist.json()
 
         mangatitle = [
@@ -88,6 +88,7 @@ class Helpers:
         mangatitle = mangatitle[0].json()['data']['attributes']['title']['en'].lower()
 
         for manga in mangalist["data"]:
-            manga["repository"] = f"{desktop_path}/MangaWave/{mangatitle}/volume{manga['attributes']['volume']}/chapter{manga['attributes']['chapter']}"
+            manga["diretory"] = f"{desktop_path}/MangaWave/{mangatitle}/volume{manga['attributes']['volume']}/chapter{manga['attributes']['chapter']}"
         
         return mangalist
+    

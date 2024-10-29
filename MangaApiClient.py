@@ -23,8 +23,6 @@ class MangaApiClient:
 
         return formatted_output
     
-
-    
     # Método que busca todos os mangás disponivel do títuloda busca
     def getMangaList(manga_id):
 
@@ -37,12 +35,10 @@ class MangaApiClient:
             },
         )
 
-        responseWithRepository = Helpers.repositoryCreate(apiResponse)
+        responseWithdiretory = Helpers.diretoryCreate(apiResponse)
 
-        return json.dumps(responseWithRepository, indent=4)
+        return json.dumps(responseWithdiretory, indent=4)
     
-   
-
     # Esse méotodo busca as paginas relacionada ao capitulo do mangá
     def getMangasPages(hash):
 
@@ -51,10 +47,7 @@ class MangaApiClient:
         )
 
         response = response.json()
-
         response = Helpers.pagesUrl(response["chapter"])
 
-        formatted_output = json.dumps(response, indent=4)
-
-        return formatted_output
+        return response
     
