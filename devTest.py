@@ -1,4 +1,7 @@
 from MangaApiClient import MangaApiClient
+from CreateFile import CreateFile
+from pathlib import Path
+desktop_path = Path.home()
 
 def getMangaTeste():
     title = input("Fale ai o mangá que ce quer: ")
@@ -16,7 +19,8 @@ def getMangasPagesTeste():
     print(MangaApiClient.getMangasPages(idPage))
 
 def pasteCreateTeste():
-    print(MangaApiClient.pasteCreate('/home/miguel/naruto/volume63/chapter601'))
+    teste = f"{desktop_path}/MangaWave/naruto/volume63/chapter601"
+    print(CreateFile.pasteCreate(teste))
 
 while True:
     print("--- Bem vindo ao ambiente de teste do mangaWave ---")

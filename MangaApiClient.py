@@ -134,10 +134,6 @@ class MangaApiClient:
         mangatitle = mangatitle[0].json()['data']['attributes']['title']['en'].lower()
 
         for manga in mangalist["data"]:
-            manga["repository"] = f"{desktop_path}/{mangatitle}/volume{manga['attributes']['volume']}/chapter{manga['attributes']['chapter']}"
+            manga["repository"] = f"{desktop_path}/MangaWave/{mangatitle}/volume{manga['attributes']['volume']}/chapter{manga['attributes']['chapter']}"
         
         return mangalist
-    
-    def pasteCreate(mangaObject):
-        repositoryManga = mangaObject
-        return repositoryManga
