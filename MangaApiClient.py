@@ -13,7 +13,9 @@ class MangaApiClient:
         response = requests.get(
             f"{base_url}/manga",
             params={
-                "title": title
+                "title": title,
+                "limit": 5,
+                "offset": 0 
             }
         )
 
@@ -29,15 +31,18 @@ class MangaApiClient:
         apiResponse = requests.get(
             f"{base_url}/manga/{manga_id}/feed",
             params={
-                "translatedLanguage[]": ["pt-br"],
-                "order[volume]": "desc",
-                "order[chapter]": "desc"
+                "translatedLanguage[]": ["pt-br", "en"],
+                "order[volume]": "asc",
+                "order[chapter]": "asc",
+                "limit": 25,
+                "offset": 0
             },
         )
 
-        responseWithdiretory = Helpers.diretoryCreate(apiResponse)
+        Finalresponse = Helpers.diretoryCreate(apiResponse)
+        Finalresponse = Helpers.reorganizeManga(Finalresponse)
 
-        return json.dumps(responseWithdiretory, indent=4)
+        return json.dumps(Finalresponse, indent=4)
     
     # Esse méotodo busca as paginas relacionada ao capitulo do mangá
     def getMangasPages(hash):

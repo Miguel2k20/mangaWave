@@ -5,12 +5,13 @@ import requests
 import shutil
 
 class CreateFile: 
-        
+
+    @staticmethod
     def pasteCreate(mangaObject):
         
         diretoryManga = mangaObject
 
-        if not os.path.exists(diretoryManga):
+        if not os.path.exists(diretoryManga):   
             os.makedirs(diretoryManga)
             CreateFile.downloadMangasPages(diretoryManga)
             response = "Mangá está pronto! Boa leitura"
@@ -30,7 +31,8 @@ class CreateFile:
                     print("Resposta inválida. Por favor, responda apenas com 'Y' ou 'N'.")
 
         return response
-
+    
+    @staticmethod
     def downloadMangasPages(diretoryManga):
 
         urlList = MangaApiClient.getMangasPages("0725c4e1-0af9-480d-8c4a-ab266ca0526b")
