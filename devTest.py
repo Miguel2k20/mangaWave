@@ -10,7 +10,7 @@ def getMangaTeste():
 
 def getMangaListTeste():
     print("Sugestão: 6b1eb93e-473a-4ab3-9922-1a66d2a29a4a é o id do mangá do Naruto")
-    idManga = "6b1eb93e-473a-4ab3-9922-1a66d2a29a4a"
+    idManga = input("Informe o id do mangá que você deseja: ")
     print(MangaApiClient.getMangaList(idManga))
 
 def getMangasPagesTeste():

@@ -92,7 +92,7 @@ class Helpers:
         mangatitle = mangatitle[0].json()['data']['attributes']['title']['en'].lower()
 
         for manga in mangalist["data"]:
-            manga["diretory"] = f"{desktop_path}/MangaWave/{mangatitle}/volume{manga['attributes']['volume']}/chapter{manga['attributes']['chapter']}"
+            manga["diretory"] = f"{desktop_path}/MangaWave/{mangatitle}/volume{manga['attributes']['volume']}/chapter{manga['attributes']['chapter']}/language-{manga['attributes']['translatedLanguage']}"
         
         return mangalist
     

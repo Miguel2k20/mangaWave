@@ -10,20 +10,22 @@ class MangaApiClient:
     # Busca de mangás em geral
     def getManga(title):
 
-        response = requests.get(
+        apiResponse = requests.get(
             f"{base_url}/manga",
             params={
                 "title": title,
                 "limit": 5,
-                "offset": 0 
+                "offset": 0,
             }
         )
 
-        customResponse = Helpers.responseCustom(response.json())
+        if apiResponse.status_code == 200 and len(apiResponse.json()["data"]) > 0:
+            customResponse = Helpers.responseCustom(apiResponse.json())
+            finalResponse = json.dumps(customResponse, indent=4)
+        else: 
+            finalResponse = "Não encontramos nenhum mangá com o nome fornecido."
 
-        formatted_output = json.dumps(customResponse, indent=4)
-
-        return formatted_output
+        return finalResponse
     
     # Método que busca todos os mangás disponivel do títuloda busca
     def getMangaList(manga_id):
@@ -39,20 +41,26 @@ class MangaApiClient:
             },
         )
 
-        Finalresponse = Helpers.diretoryCreate(apiResponse)
-        Finalresponse = Helpers.reorganizeManga(Finalresponse)
-
-        return json.dumps(Finalresponse, indent=4)
+        if apiResponse.status_code == 200 and len(apiResponse.json()["data"]) > 0:
+            finalResponse = Helpers.diretoryCreate(apiResponse)
+            finalResponse = Helpers.reorganizeManga(finalResponse)
+        else:
+            finalResponse = "Não encontramos nenhum mangá com o ID fornecido."
+        
+        return json.dumps(finalResponse, indent=4)
     
     # Esse méotodo busca as paginas relacionada ao capitulo do mangá
     def getMangasPages(hash):
 
-        response = requests.get(
+        apiResponse = requests.get(
             f"{base_url}/at-home/server/{hash}"
         )
+        
+        if apiResponse.status_code == 200:
+            apiResponse = apiResponse.json()
+            finalResponse = Helpers.pagesUrl(apiResponse["chapter"])
+        else:
+            finalResponse = "Não encontramos nenhum mangá com o ID fornecido."
 
-        response = response.json()
-        response = Helpers.pagesUrl(response["chapter"])
-
-        return response
+        return finalResponse
     
