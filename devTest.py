@@ -4,26 +4,27 @@ from pathlib import Path
 desktop_path = Path.home()
 
 def getMangaTeste():
-    title = input("Fale ai o mangá que ce quer: ")
+    title = input("Fale ai o mangá que você quer: ")
     print("Procurando seu manga....")
-    print(MangaApiClient.getManga(title))
+    return MangaApiClient.getManga(title)
 
 def getMangaListTeste():
     print("Sugestão: 6b1eb93e-473a-4ab3-9922-1a66d2a29a4a é o id do mangá do Naruto")
     idManga = input("Informe o id do mangá que você deseja: ")
-    print(MangaApiClient.getMangaList(idManga))
+    return MangaApiClient.getMangaList(idManga)
 
 def getMangasPagesTeste():
     print("Sugestão: 0725c4e1-0af9-480d-8c4a-ab266ca0526b é o cap 601 do naruto")
     idPage = input("Passa o id do captitulo ai: ")
-    print(MangaApiClient.getMangasPages(idPage))
+    return MangaApiClient.getMangasPages(idPage)
 
 def pasteCreateTeste():
     teste = f"{desktop_path}/MangaWave/vagabond/volume3/chapter25/language-pt-br"
-    print(CreateFile.pasteCreate(teste))
+    return CreateFile.pasteCreate(teste)
 
 def pdfTest():
-    print("Teste de pdf kkkkjjjj")
+    teste = f"{desktop_path}/MangaWave/vagabond/volume3/chapter25/language-pt-br"
+    return CreateFile.pdfGenerator(teste)
 
 while True:
     print("--- Bem vindo ao ambiente de teste do mangaWave ---")
@@ -38,15 +39,15 @@ while True:
 
     match option:
         case 1:
-            getMangaTeste()
+            print(getMangaTeste())
         case 2:
-            getMangaListTeste()
+            print(getMangaListTeste())
         case 3:
-            getMangasPagesTeste()
+            print(getMangasPagesTeste())
         case 4:
-            pasteCreateTeste()
+            print(pasteCreateTeste())
         case 5:
-            pdfTest()
+            print(pdfTest())
         case 6:
             print("Até mais!")
             break

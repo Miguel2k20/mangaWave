@@ -1,9 +1,10 @@
 from MangaApiClient import MangaApiClient
-import aspose.words as aw
+from PIL import Image
 
 import os
 import requests
 import shutil
+import json
 
 class CreateFile: 
 
@@ -51,6 +52,33 @@ class CreateFile:
                 print(f"Failed to download {savePath}: {e}")
 
     @staticmethod
-    def pdfGenerator(diretory):
-        doc = aw.Document()
-        builder = aw.DocumentBuilder(doc)
+    def pdfGenerator(directory):
+
+        if os.path.exists(directory):
+
+            PDFdirectory = f"{os.path.join(*directory.split('/')[:3])}/pdfs"
+
+            if not os.path.exists(PDFdirectory):
+                os.makedirs(PDFdirectory)
+            else:
+                return "O PDF já Existe"
+                        
+            filesManga = os.listdir(directory)
+            filesManga = [ 
+                os.path.join(directory, item)
+                for item in filesManga 
+            ]
+
+            images = [Image.open(img) for img in filesManga]
+
+            pdfName = f"{directory.split('/')[2]}-{directory.split('/')[3]}-{directory.split('/')[4]}.pdf"
+            mangaPDF = os.path.join(PDFdirectory, pdfName)
+
+            images[0].save(
+                mangaPDF, "PDF", resolution=100.0, save_all=True, append_images=images[1:]
+            )
+            
+            return f"PDF gerado em {mangaPDF}"
+        
+        else:
+            return "Diretório não encontrado"
