@@ -3,8 +3,6 @@ from PIL import Image
 
 import os
 import requests
-import shutil
-import json
 
 class CreateFile: 
 
