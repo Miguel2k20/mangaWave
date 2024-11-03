@@ -60,8 +60,8 @@ class Helpers:
             volumes[volume].append(chapter)
 
         sorted_volumes = {
-            volume: sorted(chapters, key=lambda x: int(x['attributes']['chapter']))
-            for volume, chapters in sorted(volumes.items(), key=lambda x: int(x[0]))
+            volume: sorted(chapters, key=lambda x: int(float(x['attributes']['chapter'])) if x['attributes']['chapter'].replace('.', '', 1).isdigit() else float('inf'))
+            for volume, chapters in sorted(volumes.items(), key=lambda x: int(float(x[0])) if x[0].replace('.', '', 1).isdigit() else float('inf'))
         }
 
         return sorted_volumes
