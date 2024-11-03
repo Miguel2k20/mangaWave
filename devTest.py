@@ -19,8 +19,11 @@ def getMangasPagesTeste():
     print(MangaApiClient.getMangasPages(idPage))
 
 def pasteCreateTeste():
-    teste = f"{desktop_path}/MangaWave/naruto/volume63/chapter601"
+    teste = f"{desktop_path}/MangaWave/vagabond/volume3/chapter25/language-pt-br"
     print(CreateFile.pasteCreate(teste))
+
+def pdfTest():
+    print("Teste de pdf kkkkjjjj")
 
 while True:
     print("--- Bem vindo ao ambiente de teste do mangaWave ---")
@@ -28,20 +31,24 @@ while True:
     print("2: Buscar os capítulos relacionado ao id mangá")
     print("3: Buscar as páginas relacionadas ao capítulo do mangá")
     print("4: Criação de pasta")
-    print("5: Sair")
+    print("5: Criação de PDF")
+    print("6: Sair")
 
     option = int(input("Selecione o item que deseja testar: "))
 
-    if option == 1:
-        getMangaTeste()
-    elif option == 2:
-        getMangaListTeste()
-    elif option == 3:
-        getMangasPagesTeste()
-    elif option == 4:
-        pasteCreateTeste()
-    elif option == 5:
-        print("Até mais!")
-        break
-    else:
-        print("Número inválido")
+    match option:
+        case 1:
+            getMangaTeste()
+        case 2:
+            getMangaListTeste()
+        case 3:
+            getMangasPagesTeste()
+        case 4:
+            pasteCreateTeste()
+        case 5:
+            pdfTest()
+        case 6:
+            print("Até mais!")
+            break
+        case _:
+            print("Número inválido")

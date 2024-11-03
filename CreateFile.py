@@ -1,4 +1,5 @@
 from MangaApiClient import MangaApiClient
+import aspose.words as aw
 
 import os
 import requests
@@ -35,7 +36,7 @@ class CreateFile:
     @staticmethod
     def downloadMangasPages(diretoryManga):
 
-        urlList = MangaApiClient.getMangasPages("0725c4e1-0af9-480d-8c4a-ab266ca0526b")
+        urlList = MangaApiClient.getMangasPages("852b134e-d94d-46e4-b58b-44bb422b8642")
         
         for item in urlList:
             try:
@@ -45,6 +46,11 @@ class CreateFile:
                 savePath = os.path.join(diretoryManga, mangaPageName)
                 with open(savePath, 'wb') as file:
                     file.write(response.content)
-                    print(f"Image saved to {mangaPageName}")
+                    print(f"Image saved to {diretoryManga}/{mangaPageName}")
             except requests.RequestException as e:
                 print(f"Failed to download {savePath}: {e}")
+
+    @staticmethod
+    def pdfGenerator(diretory):
+        doc = aw.Document()
+        builder = aw.DocumentBuilder(doc)
