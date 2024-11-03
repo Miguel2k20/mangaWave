@@ -5,6 +5,7 @@ from Helpers import Helpers
 import os
 import shutil
 import requests
+import subprocess
 import json
 
 
@@ -88,7 +89,7 @@ class CreateFile:
                 os.path.join(directory, item) 
                 for item in filesManga
             ]
-            
+
             images = [Helpers.add_padding(Image.open(img), 50) for img in filesManga]
 
             images[0].save(
@@ -99,3 +100,69 @@ class CreateFile:
         
         else:
             return "Diretório não encontrado"
+    
+    @staticmethod
+    def mobiGenerator(directory):
+        if os.path.exists(directory):
+            mobiName = f"{directory.split('/')[2]}-{directory.split('/')[3]}-{directory.split('/')[4]}.mobi"
+            mobiDirectory = f"{os.path.join(*directory.split('/')[:3])}/mobis/"
+            mobiFile = os.path.join(mobiDirectory, mobiName)
+
+            if not os.path.exists(mobiDirectory):
+                os.makedirs(mobiDirectory)
+
+            if os.path.isfile(mobiFile):
+                while True:
+                    clientResponse = input(f"O arquivo MOBI {mobiFile} já existe, deseja gerar novamente? Y ou N: ")
+                    match clientResponse.lower():
+                        case "y":
+                            os.remove(mobiFile) 
+                            break
+                        case "n":
+                            return f"Boa leitura! Seu MOBI está em {mobiFile}"
+                        case _:
+                            print("Resposta inválida. Por favor, responda apenas com 'Y' ou 'N'.")
+
+            filesManga = []
+            for item in os.listdir(directory):
+                if item.endswith('.png') or item.endswith('.jpg'):
+                    parts = item.split("-")
+                    if len(parts) > 1 and parts[1].split(".")[0].isdigit():
+                        index = int(parts[1].split(".")[0])
+                        filesManga.append((index, item))
+
+
+            filesManga.sort(key=lambda x: x[0]) 
+            filesManga = [os.path.join(directory, item[1]) for item in filesManga]
+
+            htmlFile = os.path.join(mobiDirectory, mobiName.replace('.mobi', '.html'))
+
+            with open(htmlFile, 'w') as f:
+                f.write('<html><body>')
+                for img_path in filesManga:
+                    img = Helpers.adjust_image_orientation(Image.open(img_path))  
+                    img = Helpers.add_padding(img, 50)  
+                    temp_img_name = os.path.basename(img_path).replace('.png', '_temp.png').replace('.jpg', '_temp.jpg')
+                    temp_img_path = os.path.join(mobiDirectory, temp_img_name)
+                    img.save(temp_img_path)
+                    f.write(f'<img src="{temp_img_name}" style="width:100%; margin: 0 auto; display: block;"/>')
+                f.write('</body></html>')
+
+            try:
+                subprocess.run(['ebook-convert', htmlFile, mobiFile], check=True)
+            except subprocess.CalledProcessError as e:
+                print(f"Erro na conversão para MOBI: {e}")
+
+            if os.path.isfile(htmlFile):
+                os.remove(htmlFile)
+
+            for img_path in filesManga:
+                temp_img_name = os.path.basename(img_path).replace('.png', '_temp.png').replace('.jpg', '_temp.jpg')
+                temp_img_path = os.path.join(mobiDirectory, temp_img_name)
+                if os.path.isfile(temp_img_path):
+                    os.remove(temp_img_path)
+
+            return f"MOBI gerado em {mobiFile}"
+        else:
+            return "Diretório não encontrado"
+        

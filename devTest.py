@@ -26,6 +26,10 @@ def pdfTest():
     teste = f"{desktop_path}/MangaWave/vagabond/volume3/chapter25/language-pt-br"
     return CreateFile.pdfGenerator(teste)
 
+def mobiTest():
+    teste = f"{desktop_path}/MangaWave/vagabond/volume3/chapter25/language-pt-br"
+    return CreateFile.mobiGenerator(teste)
+
 while True:
     print("--- Bem vindo ao ambiente de teste do mangaWave ---")
     print("1: Buscar um mangá pelo titulo")
@@ -33,7 +37,8 @@ while True:
     print("3: Buscar as páginas relacionadas ao capítulo do mangá")
     print("4: Criação de pasta")
     print("5: Criação de PDF")
-    print("6: Sair")
+    print("6: Croação de Mobi")
+    print("7: Sair")
 
     option = int(input("Selecione o item que deseja testar: "))
 
@@ -49,6 +54,8 @@ while True:
         case 5:
             print(pdfTest())
         case 6:
+            print(mobiTest())
+        case 7:
             print("Até mais!")
             break
         case _:

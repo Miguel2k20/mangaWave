@@ -109,3 +109,9 @@ class Helpers:
         
         return new_img
     
+    @staticmethod
+    def adjust_image_orientation(image):
+        if image.width > image.height:
+            rotated_image = image.rotate(90, expand=True)  
+            return rotated_image
+        return image
