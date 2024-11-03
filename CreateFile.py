@@ -2,6 +2,7 @@ from MangaApiClient import MangaApiClient
 from PIL import Image
 
 import os
+import shutil
 import requests
 
 class CreateFile: 
@@ -18,17 +19,18 @@ class CreateFile:
         else:
             while True:
                 clientResponse = input("Já existe um mangá relacionado, deseja deleta-lo para baixar o atual? Y or N: ")
-                if(clientResponse.lower() == "y"):
-                    os.rmdir(diretoryManga)
-                    os.makedirs(diretoryManga)
-                    CreateFile.downloadMangasPages(diretoryManga)
-                    response = "Mangá está pronto! Boa leitura"
-                    break
-                elif(clientResponse.lower() == "n"):
-                    response = "Mangá está pronto! Boa leitura"
-                    break
-                else:
-                    print("Resposta inválida. Por favor, responda apenas com 'Y' ou 'N'.")
+                match clientResponse.lower():
+                    case "y":
+                        shutil.rmtree(diretoryManga)
+                        os.makedirs(diretoryManga)
+                        CreateFile.downloadMangasPages(diretoryManga)
+                        response = "Mangá está pronto! Boa leitura"
+                        break
+                    case "n":
+                        response = "Mangá está pronto! Boa leitura"
+                        break
+                    case _:
+                        print("Resposta inválida. Por favor, responda apenas com 'Y' ou 'N'.")
 
         return response
     
