@@ -1,4 +1,6 @@
 import requests
+from PIL import Image
+
 from pathlib import Path
 from collections import defaultdict
 
@@ -94,4 +96,16 @@ class Helpers:
             manga["diretory"] = f"{desktop_path}/MangaWave/{mangatitle}/volume{manga['attributes']['volume']}/chapter{manga['attributes']['chapter']}/language-{manga['attributes']['translatedLanguage']}"
         
         return mangalist
+    
+    @staticmethod
+    def add_padding(img, padding):
+
+        new_width = img.width + 2 * padding
+        new_height = img.height + 2 * padding
+
+        new_img = Image.new("RGB", (new_width, new_height), (255, 255, 255))
+        
+        new_img.paste(img, (padding, padding))
+        
+        return new_img
     

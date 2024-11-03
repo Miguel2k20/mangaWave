@@ -1,5 +1,6 @@
 from MangaApiClient import MangaApiClient
 from PIL import Image
+from Helpers import Helpers
 
 import os
 import shutil
@@ -84,7 +85,7 @@ class CreateFile:
                 for item in filesManga 
             ]
 
-            images = [Image.open(img) for img in filesManga]
+            images = [Helpers.add_padding(Image.open(img), 50) for img in filesManga]
 
             images[0].save(
                 PDFdirectory, "PDF", resolution=100.0, save_all=True, append_images=images[1:]
