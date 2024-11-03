@@ -5,6 +5,8 @@ from Helpers import Helpers
 import os
 import shutil
 import requests
+import json
+
 
 class CreateFile: 
 
@@ -40,11 +42,11 @@ class CreateFile:
 
         urlList = MangaApiClient.getMangasPages("852b134e-d94d-46e4-b58b-44bb422b8642")
         
-        for item in urlList:
+        for index, item in enumerate(urlList, start=1):
             try:
                 response = requests.get(item)
                 response.raise_for_status()
-                mangaPageName = item.split('/')[-1]
+                mangaPageName = f"page-{index}.jpg"
                 savePath = os.path.join(diretoryManga, mangaPageName)
                 with open(savePath, 'wb') as file:
                     file.write(response.content)
@@ -79,12 +81,14 @@ class CreateFile:
                         case _:
                             print("Resposta inválida. Por favor, responda apenas com 'Y' ou 'N'.")
                         
-            filesManga = os.listdir(directory)
-            filesManga = [ 
-                os.path.join(directory, item)
-                for item in filesManga 
+            
+            filesManga = sorted(os.listdir(directory), key=lambda x: int(x.split("-")[1].split(".")[0]))
+        
+            filesManga = [
+                os.path.join(directory, item) 
+                for item in filesManga
             ]
-
+            
             images = [Helpers.add_padding(Image.open(img), 50) for img in filesManga]
 
             images[0].save(
