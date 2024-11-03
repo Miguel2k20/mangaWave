@@ -21,7 +21,7 @@ class CreateFile:
             while True:
                 clientResponse = input("Já existe um mangá relacionado, deseja deleta-lo para baixar o atual? Y or N: ")
                 if(clientResponse.lower() == "y"):
-                    shutil.rmtree(diretoryManga)
+                    os.rmdir(diretoryManga)
                     os.makedirs(diretoryManga)
                     CreateFile.downloadMangasPages(diretoryManga)
                     response = "Mangá está pronto! Boa leitura"
@@ -56,12 +56,27 @@ class CreateFile:
 
         if os.path.exists(directory):
 
-            PDFdirectory = f"{os.path.join(*directory.split('/')[:3])}/pdfs"
+            pdfName = f"{directory.split('/')[2]}-{directory.split('/')[3]}-{directory.split('/')[4]}.pdf"
+            PDFdirectory = f"{os.path.join(*directory.split('/')[:3])}/pdfs/"
 
             if not os.path.exists(PDFdirectory):
                 os.makedirs(PDFdirectory)
-            else:
-                return "O PDF já Existe"
+       
+            PDFdirectory = os.path.join(PDFdirectory, pdfName)
+
+            if os.path.isfile(PDFdirectory):
+
+                while True:
+                    clientResponse = input(f"O PDF {pdfName} já existe, deseja gerar novamente? Y or N: ")
+                    match clientResponse.lower():
+                        case "y":
+                            os.remove(PDFdirectory)
+                            break
+                        case "n":
+                            print("Não criou uma nova")
+                            return f"Boa leitura! Lembrando que seu pdf está em {PDFdirectory}"
+                        case _:
+                            print("Resposta inválida. Por favor, responda apenas com 'Y' ou 'N'.")
                         
             filesManga = os.listdir(directory)
             filesManga = [ 
@@ -71,14 +86,11 @@ class CreateFile:
 
             images = [Image.open(img) for img in filesManga]
 
-            pdfName = f"{directory.split('/')[2]}-{directory.split('/')[3]}-{directory.split('/')[4]}.pdf"
-            mangaPDF = os.path.join(PDFdirectory, pdfName)
-
             images[0].save(
-                mangaPDF, "PDF", resolution=100.0, save_all=True, append_images=images[1:]
+                PDFdirectory, "PDF", resolution=100.0, save_all=True, append_images=images[1:]
             )
             
-            return f"PDF gerado em {mangaPDF}"
+            return f"PDF gerado em {PDFdirectory}"
         
         else:
             return "Diretório não encontrado"
