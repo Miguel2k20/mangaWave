@@ -107,29 +107,34 @@ class CreateFile:
             return "Diretório não encontrado"
     
     @staticmethod
-    def mobiGenerator(directory):
-        if os.path.exists(directory):
-            mobiName = f"{directory.split('/')[2]}-{directory.split('/')[3]}-{directory.split('/')[4]}.mobi"
-            mobiDirectory = f"{os.path.join(*directory.split('/')[:3])}/mobis/"
-            mobiFile = os.path.join(mobiDirectory, mobiName)
+    def mobiGenerator(path):
+        
+        mangaDirectory = os.path.join(desktop_path, path) 
 
-            if not os.path.exists(mobiDirectory):
-                os.makedirs(mobiDirectory)
+        if os.path.exists(mangaDirectory):
 
-            if os.path.isfile(mobiFile):
+            mobiName = f"{path.split('/')[1]}-{path.split('/')[2]}-{path.split('/')[3]}.mobi"
+            mobiOutputDirectory  = os.path.join(desktop_path, path.split('/')[0], path.split('/')[1], "mobis", path.split('/')[4])
+
+            if not os.path.exists(mobiOutputDirectory):
+                os.makedirs(mobiOutputDirectory)
+
+            mobiFilePath = os.path.join(mobiOutputDirectory, mobiName)
+
+            if os.path.isfile(mobiFilePath):
                 while True:
-                    clientResponse = input(f"O arquivo MOBI {mobiFile} já existe, deseja gerar novamente? Y ou N: ")
+                    clientResponse = input(f"O arquivo MOBI {mobiFilePath} já existe, deseja gerar novamente? Y ou N: ")
                     match clientResponse.lower():
                         case "y":
-                            os.remove(mobiFile) 
+                            os.remove(mobiFilePath) 
                             break
                         case "n":
-                            return f"Boa leitura! Seu MOBI está em {mobiFile}"
+                            return f"Boa leitura! Seu MOBI está em {mobiFilePath}"
                         case _:
                             print("Resposta inválida. Por favor, responda apenas com 'Y' ou 'N'.")
 
             filesManga = []
-            for item in os.listdir(directory):
+            for item in os.listdir(mangaDirectory):
                 if item.endswith('.png') or item.endswith('.jpg'):
                     parts = item.split("-")
                     if len(parts) > 1 and parts[1].split(".")[0].isdigit():
@@ -138,36 +143,35 @@ class CreateFile:
 
 
             filesManga.sort(key=lambda x: x[0]) 
-            filesManga = [os.path.join(directory, item[1]) for item in filesManga]
+            filesManga = [os.path.join(mangaDirectory, item[1]) for item in filesManga]
+            htmlFilePath = os.path.join(mobiOutputDirectory, mobiName.replace('.mobi', '.html'))
 
-            htmlFile = os.path.join(mobiDirectory, mobiName.replace('.mobi', '.html'))
-
-            with open(htmlFile, 'w') as f:
+            with open(htmlFilePath, 'w') as f:
                 f.write('<html><body>')
                 for img_path in filesManga:
                     img = Helpers.adjust_image_orientation(Image.open(img_path))  
                     img = Helpers.add_padding(img, 50)  
                     temp_img_name = os.path.basename(img_path).replace('.png', '_temp.png').replace('.jpg', '_temp.jpg')
-                    temp_img_path = os.path.join(mobiDirectory, temp_img_name)
+                    temp_img_path = os.path.join(mobiOutputDirectory, temp_img_name)
                     img.save(temp_img_path)
                     f.write(f'<img src="{temp_img_name}" style="width:100%; margin: 0 auto; display: block;"/>')
                 f.write('</body></html>')
 
             try:
-                subprocess.run(['ebook-convert', htmlFile, mobiFile], check=True)
+                subprocess.run(['ebook-convert', htmlFilePath, mobiFilePath], check=True)
             except subprocess.CalledProcessError as e:
                 print(f"Erro na conversão para MOBI: {e}")
 
-            if os.path.isfile(htmlFile):
-                os.remove(htmlFile)
+            if os.path.isfile(htmlFilePath):
+                os.remove(htmlFilePath)
 
             for img_path in filesManga:
                 temp_img_name = os.path.basename(img_path).replace('.png', '_temp.png').replace('.jpg', '_temp.jpg')
-                temp_img_path = os.path.join(mobiDirectory, temp_img_name)
+                temp_img_path = os.path.join(mobiOutputDirectory, temp_img_name)
                 if os.path.isfile(temp_img_path):
                     os.remove(temp_img_path)
 
-            return f"MOBI gerado em {mobiFile}"
+            return f"MOBI gerado em {mobiFilePath}"
         else:
             return "Diretório não encontrado"
         
