@@ -1,16 +1,14 @@
-import tkinter as tk
+import customtkinter
 
-window = tk.Tk()
-window.title("MangaWave")
+def button_callback():
+    print("button clicked")
 
+app = customtkinter.CTk()
+app.geometry("500x400")
 
-label = tk.Label(window, text="Olá teste foda")
-label.pack()
+customtkinter.set_appearance_mode("dark")
 
-def on_button_click():
-    label.config(text="SHIT!")
+button = customtkinter.CTkButton(app, text="my button", command=button_callback)
+button.pack(padx=20, pady=20)
 
-button = tk.Button(window, text="Clica ai bro", command=on_button_click)
-button.pack()
-
-window.mainloop()
+app.mainloop()
