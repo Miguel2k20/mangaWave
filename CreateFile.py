@@ -18,7 +18,7 @@ class CreateFile:
     @staticmethod
     def pasteCreate(mangaObject):
         
-        diretoryManga = mangaObject
+        diretoryManga = os.path.join(desktop_path, mangaObject)
 
         if not os.path.exists(diretoryManga):   
             os.makedirs(diretoryManga)
@@ -43,7 +43,7 @@ class CreateFile:
         return response
     
     @staticmethod
-    def downloadMangasPages(diretoryManga):
+    def downloadMangasPages(path):
 
         urlList = MangaApiClient.getMangasPages("852b134e-d94d-46e4-b58b-44bb422b8642")
         
@@ -52,10 +52,10 @@ class CreateFile:
                 response = requests.get(item)
                 response.raise_for_status()
                 mangaPageName = f"page-{index}.jpg"
-                savePath = os.path.join(diretoryManga, mangaPageName)
+                savePath = os.path.join(path, mangaPageName)
                 with open(savePath, 'wb') as file:
                     file.write(response.content)
-                    print(f"Image saved to {diretoryManga}/{mangaPageName}")
+                    print(f"Image saved to {path}/{mangaPageName}")
             except requests.RequestException as e:
                 print(f"Failed to download {savePath}: {e}")
 
