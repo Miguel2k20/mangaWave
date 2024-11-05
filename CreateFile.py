@@ -7,7 +7,6 @@ import os
 import shutil
 import requests
 import subprocess
-import json
 
 desktop_path = Path.home()
 
