@@ -1,12 +1,16 @@
 from MangaApiClient import MangaApiClient
 from PIL import Image
 from Helpers import Helpers
+from pathlib import Path
+
 
 import os
 import shutil
 import requests
 import subprocess
 import json
+
+desktop_path = Path.home()
 
 
 class CreateFile: 
@@ -56,47 +60,48 @@ class CreateFile:
                 print(f"Failed to download {savePath}: {e}")
 
     @staticmethod
-    def pdfGenerator(directory):
+    def pdfGenerator(path):
 
-        if os.path.exists(directory):
+        mangaDirectory = os.path.join(desktop_path, path) 
 
-            pdfName = f"{directory.split('/')[2]}-{directory.split('/')[3]}-{directory.split('/')[4]}.pdf"
-            PDFdirectory = f"{os.path.join(*directory.split('/')[:3])}/pdfs/"
+        if os.path.exists(mangaDirectory):
+        
+            pdfName = f"{path.split('/')[1]}-{path.split('/')[2]}-{path.split('/')[3]}.pdf"
+            pdfOutputDirectory  = os.path.join(desktop_path, path.split('/')[0], path.split('/')[1], "pdfs", path.split('/')[4])
 
-            if not os.path.exists(PDFdirectory):
-                os.makedirs(PDFdirectory)
+            if not os.path.exists(pdfOutputDirectory ):
+                os.makedirs(pdfOutputDirectory )
        
-            PDFdirectory = os.path.join(PDFdirectory, pdfName)
+            pdfFilePath = os.path.join(pdfOutputDirectory, pdfName)
 
-            if os.path.isfile(PDFdirectory):
+            if os.path.isfile(pdfFilePath):
 
                 while True:
                     clientResponse = input(f"O PDF {pdfName} já existe, deseja gerar novamente? Y or N: ")
                     match clientResponse.lower():
                         case "y":
-                            os.remove(PDFdirectory)
+                            os.remove(pdfFilePath)
                             break
                         case "n":
                             print("Não criou uma nova")
-                            return f"Boa leitura! Lembrando que seu pdf está em {PDFdirectory}"
+                            return f"Boa leitura! Lembrando que seu pdf está em {pdfFilePath}"
                         case _:
                             print("Resposta inválida. Por favor, responda apenas com 'Y' ou 'N'.")
                         
+            filesManga = sorted(os.listdir(mangaDirectory), key=lambda x: int(x.split("-")[1].split(".")[0]))
             
-            filesManga = sorted(os.listdir(directory), key=lambda x: int(x.split("-")[1].split(".")[0]))
-        
             filesManga = [
-                os.path.join(directory, item) 
+                os.path.join(mangaDirectory, item) 
                 for item in filesManga
             ]
 
             images = [Helpers.add_padding(Image.open(img), 50) for img in filesManga]
 
             images[0].save(
-                PDFdirectory, "PDF", resolution=100.0, save_all=True, append_images=images[1:]
+                pdfFilePath, "PDF", resolution=100.0, save_all=True, append_images=images[1:]
             )
             
-            return f"PDF gerado em {PDFdirectory}"
+            return f"PDF gerado em {pdfFilePath}"
         
         else:
             return "Diretório não encontrado"

@@ -1,13 +1,10 @@
 import requests
 from PIL import Image
 
-from pathlib import Path
 from collections import defaultdict
-
 
 base_url = "https://api.mangadex.org"
 base_image_url = "https://uploads.mangadex.org"
-desktop_path = Path.home()
 
 class Helpers:
 
@@ -93,7 +90,7 @@ class Helpers:
         mangatitle = mangatitle[0].json()['data']['attributes']['title']['en'].lower()
 
         for manga in mangalist["data"]:
-            manga["diretory"] = f"{desktop_path}/MangaWave/{mangatitle}/volume{manga['attributes']['volume']}/chapter{manga['attributes']['chapter']}/language-{manga['attributes']['translatedLanguage']}"
+            manga["diretory"] = f"MangaWave/{mangatitle}/volume{manga['attributes']['volume']}/chapter{manga['attributes']['chapter']}/language-{manga['attributes']['translatedLanguage']}"
         
         return mangalist
     

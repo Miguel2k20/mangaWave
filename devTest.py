@@ -19,15 +19,15 @@ def getMangasPagesTeste():
     return MangaApiClient.getMangasPages(idPage)
 
 def pasteCreateTeste():
-    teste = f"{desktop_path}/MangaWave/vagabond/volume3/chapter25/language-pt-br"
+    teste = f"MangaWave/vagabond/volume3/chapter25/language-pt-br"
     return CreateFile.pasteCreate(teste)
 
 def pdfTest():
-    teste = f"{desktop_path}/MangaWave/vagabond/volume3/chapter25/language-pt-br"
-    return CreateFile.pdfGenerator(teste)
+    path = f"MangaWave/vagabond/volume3/chapter25/language-pt-br"
+    return CreateFile.pdfGenerator(path)
 
 def mobiTest():
-    teste = f"{desktop_path}/MangaWave/vagabond/volume3/chapter25/language-pt-br"
+    teste = f"MangaWave/vagabond/volume3/chapter25/language-pt-br"
     return CreateFile.mobiGenerator(teste)
 
 while True:
