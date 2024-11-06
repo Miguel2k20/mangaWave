@@ -14,6 +14,8 @@ class Helpers:
 
         arrayMangasInfos = {}
 
+        mangasData = mangasData.json()
+
         for item in mangasData["data"]:
 
             coverArtId = next((rel["id"] for rel in item["relationships"] if rel["type"] == "cover_art"), None)

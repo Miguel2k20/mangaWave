@@ -7,20 +7,19 @@ base_url = "https://api.mangadex.org"
 class MangaApiClient: 
     
     # Busca de mangás em geral
-    def getManga(title):
-
+    def getManga(title, offset=0):
         apiResponse = requests.get(
             f"{base_url}/manga",
             params={
                 "title": title,
-                "limit": 5,
-                "offset": 0,
+                "limit": 15,
+                "offset": offset,
             }
         )
 
         if apiResponse.status_code == 200 and len(apiResponse.json()["data"]) > 0:
-            customResponse = Helpers.responseCustom(apiResponse.json())
-            finalResponse = json.dumps(customResponse, indent=4)
+            customResponse = Helpers.responseCustom(apiResponse)
+            finalResponse = customResponse
         else: 
             finalResponse = "Não encontramos nenhum mangá com o nome fornecido."
 
@@ -35,7 +34,7 @@ class MangaApiClient:
                 "translatedLanguage[]": ["pt-br", "en"],
                 "order[volume]": "asc",
                 "order[chapter]": "asc",
-                "limit": 25,
+                "limit": 20,
                 "offset": 0
             },
         )
