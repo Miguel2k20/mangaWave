@@ -1,163 +1,80 @@
 import customtkinter
-import json
-import io
-import requests
-from PIL import Image, ImageTk
-from MangaApiClient import MangaApiClient
-import math
 
-customtkinter.set_appearance_mode("dark")
+def button_callback():
+    print("button pressed")
 
 app = customtkinter.CTk()
-app.geometry("950x650")
 app.title("MangaWave")
+app.geometry("950x650")
 app.minsize(950, 650)
+customtkinter.set_appearance_mode("dark")
 
-def getchaptersMangas(mangaId):
-    print(mangaId)
+menuSpace = customtkinter.CTkFrame(
+    app,
+    height=500,
+    border_color="#fff",
+    border_width=1
+)
 
-def getInputValue(offset=0):
-    response = MangaApiClient.getManga(entry.get(), offset=offset)
-    data = response.get("data")
-    total = response.get("total")  
+menuSpace.pack(expand=True)
 
-    limit = 15  
-    total_pages = math.ceil(total / limit)
-    print(total_pages)
-
-    for widget in mangaResults.winfo_children():
-        widget.destroy()
-
-    
-    for manga_id, manga_info in data.items():
-        frameResult = customtkinter.CTkFrame(
-            mangaResults, 
-            width=900, 
-            height=100,
-            fg_color = "#23272d"
-        )
-
-        frameResult.pack(expand=True)
-
-        title = manga_info.get("title")
-
-        cover_path = manga_info.get("cover_art")
-        response = requests.get(cover_path)
-        image_data = response.content  
-        cover_image = Image.open(io.BytesIO(image_data))
-        cover_photo = customtkinter.CTkImage(
-            light_image=cover_image,
-            size=(250,400)
-        )
-        cover_label = customtkinter.CTkLabel(
-            frameResult,
-            image=cover_photo,
-            text=""
-        )
-
-        manga_title_label = customtkinter.CTkLabel(
-            frameResult,
-            text=f"{title}",
-            text_color="#FFF",
-            font=("arial", 25)
-        )
-
-        btn = customtkinter.CTkButton(
-            frameResult, 
-            text="Veja Mais", 
-            font=("arial", 15),
-            command=lambda manga_id=manga_id: getchaptersMangas(manga_id)
-        )
-
-        frameResult.pack(
-            anchor="w",
-            padx=10,
-            pady=5,
-            fill="both"
-        )
-
-        manga_title_label.pack(
-            expand=True,
-            pady=10,
-            padx=10,
-        )
-
-        cover_label.pack(
-            expand=True,
-            pady=(0,10),
-            padx=10,
-        )
-
-        btn.pack(
-            anchor="center",
-            pady=10
-        )
-
-    for widget in paginate.winfo_children():
-        widget.destroy()
-
-    for page in range(1, total_pages + 1):
-        page_button = customtkinter.CTkButton(
-            paginate, 
-            text=str(page), 
-            width=40,
-            command=lambda page=page: getInputValue(offset=(page-1)*limit)  # Passando o offset corretamente
-        )
-        page_button.pack(side="left", padx=5)
-
-
-entrySpace =  customtkinter.CTkFrame(
-    app, 
-    width=925,
-    height=15,
-    fg_color = "#23272d"
+maintitle = customtkinter.CTkLabel(
+    menuSpace,
+    text="Bem Vindo ao MangaWave",
+    font=("Arial", 24)
 )
 
 entry = customtkinter.CTkEntry(
-    entrySpace, 
-    placeholder_text="Que mangá você está buscando?", 
-    width=450,
-    font=("arial", 15)
+    menuSpace, 
+    placeholder_text="Que Manga nós vamos ler hoje?",
+    width=350
 )
 
-btn = customtkinter.CTkButton(
-    entrySpace, 
+buttonSearch = customtkinter.CTkButton(
+    menuSpace,
     text="Buscar", 
-    command=getInputValue
+    command=button_callback
 )
 
-mangaResults =  customtkinter.CTkScrollableFrame(
-    app, 
-    width=900,
-    height=550,
+buttonAnime = customtkinter.CTkButton(
+    menuSpace,
+    text="Seus Mangas", 
+    command=button_callback
 )
 
-paginate = customtkinter.CTkFrame(
-    app, 
-    height=50,
-    width=850,
+app.grid_columnconfigure(0, weight=0) 
+app.grid_columnconfigure(1, weight=1) 
+app.grid_columnconfigure(2, weight=0) 
+
+
+maintitle.grid(
+    row=0,
+    column=1,
+    columnspan=2,
+    pady=(25, 10),
+    padx=50
 )
 
-entry.pack(
-    side="left",
-    padx=(5,0), 
-)   
-btn.pack(
-    side="left",
-    padx=5, 
-)  
-
-entrySpace.pack(
-    expand=True,
-    side="top"
-)
-mangaResults.pack(
-    expand=True
-)
-paginate.pack(
-    expand=True,
-    side="bottom"
+entry.grid(
+    row=1,
+    column=1,
+    columnspan=2,
+    pady=(10, 10),
+    padx=50
 )
 
+buttonSearch.grid(
+    row=2,
+    column=1, 
+    padx=(80,0),
+    pady=(0,25) 
+)
+
+buttonAnime.grid(
+    row=2,
+    column=2, 
+    padx=(0,80),
+    pady=(0,25) 
+)
 
 app.mainloop()
