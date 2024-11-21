@@ -1,5 +1,5 @@
-from MangaApiClient import MangaApiClient
-from CreateFile import CreateFile
+from api.CreateFile import CreateFile
+from api.MangaApiClient import MangaApiClient
 
 def getMangaTeste():
     title = input("Fale ai o mangá que você quer: ")

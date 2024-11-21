@@ -1,6 +1,6 @@
 import requests
 import json
-from Helpers import Helpers
+from .Helpers import Helpers
 
 base_url = "https://api.mangadex.org"
 

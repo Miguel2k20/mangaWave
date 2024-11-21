@@ -3,32 +3,26 @@ import json
 import io
 import requests
 from PIL import Image, ImageTk
-from MangaApiClient import MangaApiClient
+from api.MangaApiClient import MangaApiClient
 import math
+import threading
 
-customtkinter.set_appearance_mode("dark")
-
-app = customtkinter.CTk()
-app.geometry("950x650")
-app.title("MangaWave")
-app.minsize(950, 650)
-
-def getchaptersMangas(mangaId):
-    print(mangaId)
-
-def getInputValue(offset=0):
-    response = MangaApiClient.getManga(entry.get(), offset=offset)
+# Função para buscar mangás em uma thread separada
+def fetch_mangas(entry_text, offset, mangaResults, paginate, update_gui_callback):
+    response = MangaApiClient.getManga(entry_text, offset=offset)
     data = response.get("data")
     total = response.get("total")  
 
     limit = 15  
     total_pages = math.ceil(total / limit)
-    print(total_pages)
 
+    # Aqui você chama a função para atualizar a interface com os novos dados
+    update_gui_callback(data, total_pages, mangaResults, paginate)
+
+def update_gui(data, total_pages, mangaResults, paginate):
     for widget in mangaResults.winfo_children():
         widget.destroy()
 
-    
     for manga_id, manga_info in data.items():
         frameResult = customtkinter.CTkFrame(
             mangaResults, 
@@ -105,59 +99,82 @@ def getInputValue(offset=0):
         )
         page_button.pack(side="left", padx=5)
 
+def start_manga_interface(app):
+    def getchaptersMangas(mangaId):
+        print(mangaId)
 
-entrySpace =  customtkinter.CTkFrame(
-    app, 
-    width=925,
-    height=15,
-    fg_color = "#23272d"
-)
+    def getInputValue(offset=0):
+        entry_text = entry.get()
+        
+        # Criando a thread para buscar os mangás
+        threading.Thread(target=fetch_mangas, args=(entry_text, offset, mangaResults, paginate, update_gui), daemon=True).start()
 
-entry = customtkinter.CTkEntry(
-    entrySpace, 
-    placeholder_text="Que mangá você está buscando?", 
-    width=450,
-    font=("arial", 15)
-)
+    entrySpace =  customtkinter.CTkFrame(
+        app, 
+        width=925,
+        height=15,
+        fg_color = "#23272d"
+    )
 
-btn = customtkinter.CTkButton(
-    entrySpace, 
-    text="Buscar", 
-    command=getInputValue
-)
+    entry = customtkinter.CTkEntry(
+        entrySpace, 
+        placeholder_text="Que mangá você está buscando?", 
+        width=450,
+        font=("arial", 15)
+    )
 
-mangaResults =  customtkinter.CTkScrollableFrame(
-    app, 
-    width=900,
-    height=550,
-)
+    btn = customtkinter.CTkButton(
+        entrySpace, 
+        text="Buscar", 
+        command=getInputValue
+    )
 
-paginate = customtkinter.CTkFrame(
-    app, 
-    height=50,
-    width=850,
-)
+    mangaResults =  customtkinter.CTkScrollableFrame(
+        app, 
+        width=900,
+        height=550,
+    )
 
-entry.pack(
-    side="left",
-    padx=(5,0), 
-)   
-btn.pack(
-    side="left",
-    padx=5, 
-)  
+    paginate = customtkinter.CTkFrame(
+        app, 
+        height=50,
+        width=850,
+    )
 
-entrySpace.pack(
-    expand=True,
-    side="top"
-)
-mangaResults.pack(
-    expand=True
-)
-paginate.pack(
-    expand=True,
-    side="bottom"
-)
+    entry.pack(
+        side="left",
+        padx=(5,0), 
+    )   
+    btn.pack(
+        side="left",
+        padx=5, 
+    )  
 
+    entrySpace.pack(
+        expand=True,
+        side="top"
+    )
+    mangaResults.pack(
+        expand=True
+    )
+    paginate.pack(
+        expand=True,
+        side="bottom"
+    )
 
-app.mainloop()
+def main():
+    customtkinter.set_appearance_mode("dark")
+
+    app = customtkinter.CTk()
+    app.geometry("950x650")
+    app.title("MangaWave")
+    app.minsize(950, 650)
+
+    # Chama a função para iniciar a interface de manga
+    start_manga_interface(app)
+
+    # Inicia o loop principal do Tkinter
+    app.mainloop()
+
+# Chama a função principal para rodar o programa
+main()

@@ -1,6 +1,6 @@
-from MangaApiClient import MangaApiClient
+from .MangaApiClient import MangaApiClient
+from .Helpers import Helpers
 from PIL import Image
-from Helpers import Helpers
 from pathlib import Path
 
 import os

@@ -1,7 +1,9 @@
 import customtkinter
+from getMangaInterface import main
 
 def button_callback():
     print("button pressed")
+    main()
 
 app = customtkinter.CTk()
 app.title("MangaWave")
