@@ -7,7 +7,6 @@ from api.MangaApiClient import MangaApiClient
 import math
 import threading
 
-# Função para buscar mangás em uma thread separada
 def fetch_mangas(entry_text, offset, mangaResults, paginate, update_gui_callback):
     response = MangaApiClient.getManga(entry_text, offset=offset)
     data = response.get("data")
@@ -16,7 +15,6 @@ def fetch_mangas(entry_text, offset, mangaResults, paginate, update_gui_callback
     limit = 15  
     total_pages = math.ceil(total / limit)
 
-    # Aqui você chama a função para atualizar a interface com os novos dados
     update_gui_callback(data, total_pages, mangaResults, paginate)
 
 def update_gui(data, total_pages, mangaResults, paginate):
@@ -95,7 +93,7 @@ def update_gui(data, total_pages, mangaResults, paginate):
             paginate, 
             text=str(page), 
             width=40,
-            command=lambda page=page: getInputValue(offset=(page-1)*limit)  # Passando o offset corretamente
+            command=lambda page=page: getInputValue(offset=(page-1)*limit)  
         )
         page_button.pack(side="left", padx=5)
 
@@ -106,7 +104,6 @@ def start_manga_interface(app):
     def getInputValue(offset=0):
         entry_text = entry.get()
         
-        # Criando a thread para buscar os mangás
         threading.Thread(target=fetch_mangas, args=(entry_text, offset, mangaResults, paginate, update_gui), daemon=True).start()
 
     entrySpace =  customtkinter.CTkFrame(
@@ -170,11 +167,8 @@ def main():
     app.title("MangaWave")
     app.minsize(950, 650)
 
-    # Chama a função para iniciar a interface de manga
     start_manga_interface(app)
 
-    # Inicia o loop principal do Tkinter
     app.mainloop()
 
-# Chama a função principal para rodar o programa
 main()
