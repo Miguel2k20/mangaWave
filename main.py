@@ -1,6 +1,6 @@
-from flask import Flask, jsonify, request
-from api.CreateFile import CreateFile
-from api.MangaApiClient import MangaApiClient
+from flask import Flask
+from controller.CreateFile import CreateFile
+from controller.MangaApiClient import MangaApiClient
 
 app = Flask(__name__)
 
