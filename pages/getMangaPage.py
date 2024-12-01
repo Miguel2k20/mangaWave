@@ -29,7 +29,7 @@ def main(page: ft.Page):
         wrap=True,
         visible=False,
         scroll=ft.ScrollMode.AUTO,
-        height=600
+        height=0.7 * page.window_height
     )
 
 
@@ -42,6 +42,7 @@ def main(page: ft.Page):
 
         if mangaData:
             pageTitle.value = f"Resultado de {inputManga.value} ({mangaData['total']} resultado{'s' if mangaData['total'] > 1 else ''})"
+            
             resultsManga.controls = [
                 ft.Container(
                     content=ft.Column([
@@ -51,11 +52,25 @@ def main(page: ft.Page):
                     ], 
                     alignment="center", horizontal_alignment="center"),
                     padding=10,
-                    width=0.3 * page.window_width,
+                    width=0.32 * page.window_width,
+                    height=450,
                     border_radius=10,
                     bgcolor="#3d444d"
                 ) for manga in mangaData['data'].values()
             ]
+
+            resultsManga.controls.append(
+                ft.Row(
+                    controls=[
+                        ft.ElevatedButton(
+                            text=mangaData['limit'],
+                        ),
+                        ft.ElevatedButton(
+                            text='Meus Mangas Baixados',
+                        )
+                    ]
+                )
+            )
 
             resultsManga.visible = True
         else:

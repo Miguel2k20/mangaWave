@@ -12,7 +12,7 @@ class MangaApiClient:
             f"{base_url}/manga",
             params={
                 "title": title,
-                "limit": 15,
+                "limit": 10,
                 "offset": offset,
             }
         )

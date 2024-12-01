@@ -7,6 +7,7 @@ from pages.getMangaPage import main as manga_list_page
 def main(page: ft.Page):
     
     page.title = 'MangaWave'
+    page.theme_mode = "dark"
 
     def route_change(e: ft.RouteChangeEvent):
         page.views.clear()
