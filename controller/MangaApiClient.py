@@ -12,8 +12,10 @@ class MangaApiClient:
             f"{base_url}/manga",
             params={
                 "title": title,
-                "limit": 10,
+                "limit": 50,
                 "offset": offset,
+                "includes[]" : "cover_art",
+                "availableTranslatedLanguage[]" : ["pt-br", "en"]
             }
         )
 

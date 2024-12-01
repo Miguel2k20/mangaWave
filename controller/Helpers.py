@@ -1,6 +1,8 @@
 import requests
 from PIL import Image
 
+import json
+
 from collections import defaultdict
 
 base_url = "https://api.mangadex.org"
@@ -18,14 +20,21 @@ class Helpers:
 
         for item in mangasData["data"]:
 
-            coverArtId = next((rel["id"] for rel in item["relationships"] if rel["type"] == "cover_art"), None)
-            
+            coverArtJpg = next(
+                (
+                    itemCover['attributes']['fileName']
+                    for itemCover in item['relationships']
+                    if itemCover['type'] == "cover_art"
+                ),
+                None
+            )
+
             mangaId = item["id"]
 
             arrayMangasInfos[mangaId] = {
                 "type": item['type'],
                 "title": item['attributes']['title']['en'],
-                "cover_art": Helpers.getCoverImage(mangaId, coverArtId, 256),
+                "cover_art": Helpers.getCoverImage(mangaId, coverArtJpg, 256),
                 "status": item['attributes']['status'],
                 "lenguangesEnsabled": item['attributes']['availableTranslatedLanguages']
             }
@@ -36,15 +45,9 @@ class Helpers:
     
     # Esse método vai buscar as imagens da capa do mangás, existe 2 resoluções atualmente: 512 ou 256
     @staticmethod
-    def getCoverImage(mangaId, coverId, size):
-        
-        response = requests.get(
-            f"{base_url}/cover/{coverId}",
-        ).json()
-        
-        fileName = response["data"]['attributes']['fileName']
+    def getCoverImage(mangaId, coverArtJpg, size):
 
-        coverUrl = f"{base_image_url}/covers/{mangaId}/{fileName}.{size}.jpg"
+        coverUrl = f"{base_image_url}/covers/{mangaId}/{coverArtJpg}.{size}.jpg"
         
         return coverUrl
     
