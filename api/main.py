@@ -1,10 +1,11 @@
 import flet as ft
-from pages.main import home_page
-from pages.main import manga_get_page
-from pages.main import manga_list_page
+from pages.homePage import main as home_page
+from pages.getMangaPage import main as manga_get_page
+from pages.getMangaPage import main as manga_list_page
 
 
 def main(page: ft.Page):
+    
     page.title = 'MangaWave'
 
     def route_change(e: ft.RouteChangeEvent):
@@ -17,7 +18,7 @@ def main(page: ft.Page):
                 manga_get_page(page)
             case '/mangas-list':
                 manga_list_page(page)
-                
+
         page.update()
 
     page.on_route_change = route_change

@@ -2,6 +2,7 @@ import flet as ft
 from flet import MainAxisAlignment, CrossAxisAlignment
 
 def main(page: ft.Page):
+
     page.views.append(
         ft.View(
             route='/',
@@ -20,6 +21,10 @@ def main(page: ft.Page):
                         ft.ElevatedButton(
                             text='Meus Mangas Baixados',
                             on_click=lambda _: page.go('/mangas-list'),
+                        ),
+                        ft.ElevatedButton(
+                            text='Créditos',
+                            on_click=lambda _: page.go('/credits'),
                         ),
                     ],
                     alignment=MainAxisAlignment.CENTER

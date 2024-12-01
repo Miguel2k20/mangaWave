@@ -21,7 +21,7 @@ class MangaApiClient:
             customResponse = Helpers.responseCustom(apiResponse)
             finalResponse = customResponse
         else: 
-            finalResponse = "Não encontramos nenhum mangá com o nome fornecido."
+            finalResponse = None
 
         return finalResponse
     
