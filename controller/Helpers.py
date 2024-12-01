@@ -139,7 +139,4 @@ class Helpers:
         startPage = max(1, atualPage - 3)
         endPage = min(Totalpages, atualPage + 8)
 
-        print(atualPage)
-        print(startPage)
-
         return [startPage, endPage]
