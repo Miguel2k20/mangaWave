@@ -1,7 +1,8 @@
 import flet as ft
 from pages.homePage import main as home_page
-from pages.getMangaPage import main as manga_get_page
-from pages.getMangaPage import main as manga_list_page
+from pages.ChapterVolumeListTemplate import main as manga_get_page
+from pages.MangachaptersPage import main as manga_list_page
+
 
 
 def main(page: ft.Page):
@@ -12,13 +13,18 @@ def main(page: ft.Page):
     def route_change(e: ft.RouteChangeEvent):
         page.views.clear()
 
-        match page.route:
+        match page.route.split("?")[0]:
             case '/':
                 home_page(page)
             case '/mangas-get':
                 manga_get_page(page)
-            case '/mangas-list':
-                manga_list_page(page)
+            case '/manga-list-page':
+                params = page.route.split("?")[1] if "?" in page.route else ""
+                params_dict = dict(param.split("=") for param in params.split("&") if "=" in param)
+                id_value = params_dict.get("id", None)
+                manga_list_page(page, id_value)
+            # case '/manga-list-page':
+            #     manga_list_page(page)
 
         page.update()
 

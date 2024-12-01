@@ -1,5 +1,4 @@
 import requests
-import json
 from .Helpers import Helpers
 
 base_url = "https://api.mangadex.org"
@@ -15,7 +14,7 @@ class MangaApiClient:
                 "limit": 25,
                 "offset": offset,
                 "includes[]" : "cover_art",
-                "availableTranslatedLanguage[]" : ["pt-br", "en"]
+                "availableTranslatedLanguage[]" : ["pt-br"]
             }
         )
 
@@ -28,26 +27,25 @@ class MangaApiClient:
         return finalResponse
     
     # Método que busca todos os mangás disponivel do títuloda busca
-    def getMangaList(manga_id):
+    def getMangaList(manga_id, offset=0):
 
         apiResponse = requests.get(
             f"{base_url}/manga/{manga_id}/feed",
             params={
-                "translatedLanguage[]": ["pt-br", "en"],
+                "translatedLanguage[]": ["pt-br"],
                 "order[volume]": "asc",
                 "order[chapter]": "asc",
-                "limit": 20,
-                "offset": 0
+                "limit": 100,
+                "offset": offset
             },
         )
 
         if apiResponse.status_code == 200 and len(apiResponse.json()["data"]) > 0:
             finalResponse = Helpers.diretoryCreate(apiResponse)
-            finalResponse = Helpers.reorganizeManga(finalResponse)
         else:
-            finalResponse = "Não encontramos nenhum mangá com o ID fornecido."
+            finalResponse = None
         
-        return json.dumps(finalResponse, indent=4)
+        return finalResponse
     
     # Esse méotodo busca as paginas relacionada ao capitulo do mangá
     def getMangasPages(hash):

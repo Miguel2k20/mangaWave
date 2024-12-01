@@ -50,8 +50,11 @@ def main(page: ft.Page):
     def navegatePaginate(page_number, mangaData):
         offset = (page_number - 1) * mangaData['limit']
         getMangaList(offset)  
+
     def goToList(e):
-        print(e) 
+        route = f"/manga-list-page?id={e}"
+        page.go(route)
+        
 
     def printResult(title, result):
         pageTitle.value = f"Resultado de {title} ({result['total']} resultado{'s' if result['total'] > 1 else ''})"
