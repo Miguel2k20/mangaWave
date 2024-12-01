@@ -1,8 +1,6 @@
 import requests
+import math
 from PIL import Image
-
-import json
-
 from collections import defaultdict
 
 base_url = "https://api.mangadex.org"
@@ -33,10 +31,10 @@ class Helpers:
 
             arrayMangasInfos[mangaId] = {
                 "type": item['type'],
-                "title": item['attributes']['title']['en'],
+                "title": item['attributes']['title'].get('en') or item['attributes']['title'].get('ja'),
                 "cover_art": Helpers.getCoverImage(mangaId, coverArtJpg, 256),
-                "status": item['attributes']['status'],
-                "lenguangesEnsabled": item['attributes']['availableTranslatedLanguages']
+                "status": item['attributes'].get('status'),
+                "lenguangesEnsabled": item['attributes'].get('availableTranslatedLanguages')
             }
 
         mangasData['data'] = arrayMangasInfos
@@ -46,9 +44,7 @@ class Helpers:
     # Esse método vai buscar as imagens da capa do mangás, existe 2 resoluções atualmente: 512 ou 256
     @staticmethod
     def getCoverImage(mangaId, coverArtJpg, size):
-
         coverUrl = f"{base_image_url}/covers/{mangaId}/{coverArtJpg}.{size}.jpg"
-        
         return coverUrl
     
      # Esse método vai organizar os mangás por capitulo (Isso já está sendo feito na query da api, mas fiz isso pra faciliar no meu front) 
@@ -132,3 +128,16 @@ class Helpers:
             rotated_image = image.rotate(90, expand=True)  
             return rotated_image
         return image
+    
+    @staticmethod
+    def paginateGenerate(total, limit, offSet):
+        if offSet == 0:
+            atualPage = 1
+        else :
+            atualPage = math.ceil(offSet/limit)
+
+        Totalpages = math.ceil(total/limit)
+        startPage = max(1, atualPage - 10)
+        endPage = min(Totalpages, atualPage + 10)
+
+        return [startPage, endPage]
