@@ -1,8 +1,8 @@
 import flet as ft
-from flet import View, Page, AppBar, ElevatedButton, Text
 from flet import RouteChangeEvent, CrossAxisAlignment, MainAxisAlignment
 
-def main(page: Page):
+
+def main(page: ft.Page):
     page.title = 'MangaWave'
 
     def route_change(e: RouteChangeEvent):
@@ -11,18 +11,26 @@ def main(page: Page):
         # Página Home
         if page.route == '/':
             page.views.append(
-                View(
+                ft.View(
                     route='/',
                     controls=[
-                        AppBar(title=Text('MangaWave - Menu')),
-                        Text(value='Como posso ajudar?', size=30),
-                        ElevatedButton(
-                            text='Buscar Manga',
-                            on_click=lambda _: page.go('/mangas-get'),
+                        ft.AppBar(title=ft.Text('MangaWave - Home')),
+                        ft.Text(
+                            value='Bem vindo ao MangaWave!', 
+                            size=30
                         ),
-                        ElevatedButton(
-                            text='Meus Mangas baixados',
-                            on_click=lambda _: page.go('/mangas-list'),
+                        ft.Row(
+                            controls=[
+                                ft.ElevatedButton(
+                                    text='Buscar Manga',
+                                    on_click=lambda _: page.go('/mangas-get'),
+                                ),
+                                ft.ElevatedButton(
+                                    text='Meus Mangas baixados',
+                                    on_click=lambda _: page.go('/mangas-list'),
+                                )
+                            ],
+                            alignment=MainAxisAlignment.CENTER
                         ),
                     ],
                     vertical_alignment=MainAxisAlignment.CENTER,
@@ -32,30 +40,55 @@ def main(page: Page):
 
         # Página De Busca De Mangas
         elif page.route == '/mangas-get':
+
+            inputManga = ft.TextField(
+                label="Nome Do Mangá",
+                bgcolor='#3d444d',
+                color='#ffffff'
+            )
+
+            def button_clicked(e):
+                print(inputManga.value)
+
             page.views.append(
-                View(
+                ft.View(
                     route='/mangas-get',
                     controls=[
-                        AppBar(title=Text('MangaWave - Busca')),
-                        Text(value='Na teoria, vou por a lista de mangas aqui', size=30),
-                        ElevatedButton(
-                            text='Voltamo la pra home?',
-                            on_click=lambda _: page.go('/'),
+                        ft.AppBar(
+                            title=ft.Text('MangaWave - Buscar Manga'),
+                            leading=ft.IconButton(
+                                icon="ARROW_BACK_IOS",
+                                on_click=lambda _: page.go('/'),
+                            ),
                         ),
+                        ft.Row(
+                            controls=[
+                                ft.Container(
+                                    content=inputManga,
+                                    width=0.89 * page.window_width
+                                ),
+                                ft.ElevatedButton(
+                                    text="Pesquisar", 
+                                    on_click=button_clicked,
+                                    icon="SEARCH",
+                                    expand=True,
+                                )
+                            ]
+                        )
                     ],
-                    vertical_alignment=MainAxisAlignment.CENTER,
-                    horizontal_alignment=CrossAxisAlignment.CENTER,
+                    # vertical_alignment=MainAxisAlignment.CENTER,
+                    # horizontal_alignment=CrossAxisAlignment.CENTER,
                 )
             )
 
         elif page.route == '/mangas-list':
             page.views.append(
-                View(
+                ft.View(
                     route='/mangas-list',
                     controls=[
-                        AppBar(title=Text('MangaWave - Lista De Mangas Salvos')),
-                        Text(value='Sua lista de mangas ai carai', size=30),
-                        ElevatedButton(
+                        ft.AppBar(title=ft.Text('MangaWave - Lista De Mangas Salvos')),
+                        ft.Text(value='Sua lista de mangas ai carai', size=30),
+                        ft.ElevatedButton(
                             text='Voltamo la pra home?',
                             on_click=lambda _: page.go('/'),
                         ),
@@ -72,3 +105,5 @@ def main(page: Page):
     page.go(page.route)
 
 ft.app(main)
+
+

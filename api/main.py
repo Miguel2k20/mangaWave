@@ -1,31 +1,26 @@
-from flask import Flask
-from controller.CreateFile import CreateFile
-from controller.MangaApiClient import MangaApiClient
+import flet as ft
+from pages.main import home_page
+from pages.main import manga_get_page
+from pages.main import manga_list_page
 
-app = Flask(__name__)
 
-@app.route('/manga/<string:title>', methods=['GET'])
-def getMangaName(title):
-    return MangaApiClient.getManga(title)
+def main(page: ft.Page):
+    page.title = 'MangaWave'
 
-@app.route('/manga-list/<string:id>', methods=['GET'])
-def getMangaList(id):
-    return MangaApiClient.getMangaList(id)
+    def route_change(e: ft.RouteChangeEvent):
+        page.views.clear()
 
-@app.route('/manga-pages/<string:id>', methods=['GET'])
-def getMangasPages(id):
-    return MangaApiClient.getMangasPages(id)
+        match page.route:
+            case '/':
+                home_page(page)
+            case '/mangas-get':
+                manga_get_page(page)
+            case '/mangas-list':
+                manga_list_page(page)
+                
+        page.update()
 
-@app.route('/download-files/<path:manga_path>', methods=['POST'])
-def pasteCreate(manga_path):
-    return CreateFile.pasteCreate(manga_path)
+    page.on_route_change = route_change
+    page.go(page.route)
 
-@app.route('/download-pdf/<path:manga_path>', methods=['POST'])
-def pdfGenerator(manga_path):
-    return CreateFile.pdfGenerator(manga_path)
-
-@app.route('/download-mobi/<path:manga_path>', methods=['POST'])
-def mobiGenerator(manga_path):
-    return CreateFile.mobiGenerator(manga_path)
-
-app.run(port=5000, host='localhost', debug=True)
+ft.app(main)
