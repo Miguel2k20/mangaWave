@@ -135,9 +135,11 @@ class Helpers:
             atualPage = 1
         else :
             atualPage = math.ceil(offSet/limit)
-
         Totalpages = math.ceil(total/limit)
-        startPage = max(1, atualPage - 10)
-        endPage = min(Totalpages, atualPage + 10)
+        startPage = max(1, atualPage - 3)
+        endPage = min(Totalpages, atualPage + 8)
+
+        print(atualPage)
+        print(startPage)
 
         return [startPage, endPage]

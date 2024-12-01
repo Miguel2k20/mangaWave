@@ -1,6 +1,5 @@
 import flet as ft
 from controller.MangaApiClient import MangaApiClient
-import math
 from controller.Helpers import Helpers
 
 def main(page: ft.Page):
@@ -79,7 +78,7 @@ def main(page: ft.Page):
             buttonsPage = [
                 ft.ElevatedButton(
                     text=str(pageNumber),
-                    on_click=lambda e, page_number=pageNumber: navegatePaginate(page_number, result)  # Passa mangaData aqui
+                    on_click=lambda e, page_number=pageNumber: navegatePaginate(page_number, result) 
                 ) for pageNumber in range(paginate[0], paginate[1] + 1)
             ]
             resultsManga.controls.append(
@@ -109,7 +108,7 @@ def main(page: ft.Page):
                         ),
                         ft.ElevatedButton(
                             text="Pesquisar", 
-                            on_click=lambda e: getMangaList(0),  # Chama a função de busca inicial
+                            on_click=lambda e: getMangaList(0),
                             icon="SEARCH",
                         )
                     ]
