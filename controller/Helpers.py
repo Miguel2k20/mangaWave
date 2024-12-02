@@ -47,6 +47,41 @@ class Helpers:
         coverUrl = f"{base_image_url}/covers/{mangaId}/{coverArtJpg}.{size}.jpg"
         return coverUrl
     
+     # Esse método vai organizar os mangás por capitulo (Isso já está sendo feito na query da api, mas fiz isso pra faciliar no meu front) 
+    @staticmethod
+    def reorganizeManga(mangalist):
+        
+        volumes = defaultdict(list)
+
+        for chapter in mangalist["data"]:
+            volume = chapter['attributes'].get('volume') 
+            if volume is None: 
+                volume = "Volume Não Definido"
+            volumes[volume].append(chapter)
+
+        sorted_volumes = {
+            volume: sorted(
+                chapters,
+                key=lambda x: (
+                    int(float(x['attributes']['chapter']))
+                    if x['attributes'].get('chapter') and x['attributes']['chapter'].replace('.', '', 1).isdigit()
+                    else float('inf')
+                )
+            )
+            for volume, chapters in sorted(
+                volumes.items(),
+                key=lambda x: (
+                    int(float(x[0]))
+                    if x[0] and x[0].replace('.', '', 1).isdigit()
+                    else float('inf')
+                )
+            )
+        }
+
+        updated_mangalist = {**mangalist, "data": sorted_volumes}
+
+        return updated_mangalist
+    
     # Essa funcao vai apenas montar a url da imagem
     @staticmethod
     def pagesUrl(apiResponse): 

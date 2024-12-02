@@ -42,6 +42,7 @@ class MangaApiClient:
 
         if apiResponse.status_code == 200 and len(apiResponse.json()["data"]) > 0:
             finalResponse = Helpers.diretoryCreate(apiResponse)
+            finalResponse = Helpers.reorganizeManga(finalResponse)
         else:
             finalResponse = None
         

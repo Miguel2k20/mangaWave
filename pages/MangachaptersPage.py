@@ -12,9 +12,16 @@ def main(page: ft.Page, idManga):
         ],
         visible=True
     )
+
+    resultschapters = ft.Row(
+        controls=[],
+        wrap=True,
+        visible=False,
+        scroll=ft.ScrollMode.AUTO,
+        height=0.7 * page.window_height
+    )
     
     mangaChapters = MangaApiClient.getMangaList(idManga)
-    print(json.dumps(mangaChapters, indent=4))
 
     page.views.append(
         ft.View(
@@ -28,7 +35,8 @@ def main(page: ft.Page, idManga):
                     ),
                 ),
                 ft.Text(value='Naruto!', size=30),
-                progressRow
+                progressRow,
+                resultschapters
             ],
         )
     )
