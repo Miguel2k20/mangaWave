@@ -29,29 +29,30 @@ def main(page: ft.Page, idManga):
 
         chapters = mangas['data']
 
+
         resultschapters.content = ft.Column(
             controls=[
                 ft.Column(
                     controls=[
-                        
                         ft.Text(
                             value=f"Volume: {key}", 
                             size=24, 
                             weight="bold"
                         ),
-
-                        ft.Column(
-                            controls=[
-                                ft.Text(
-                                    value=f"Cap {chapter['attributes']['chapter']}",
-                                    size=12
-                                ),
-                                ft.Text(
-                                    value=f"Captiulo {chapter['attributes']['title']}",
-                                    size=15
-                                ) 
-                            ]
-                        ) for chapter in chapters
+                        [
+                            ft.Column(
+                                controls=[
+                                    ft.Text(
+                                        value=f"Cap {chapter['attributes']['chapter']}",
+                                        size=12
+                                    ),
+                                    ft.Text(
+                                        value=f"Capítulo {chapter['attributes']['title']}",
+                                        size=15
+                                    )
+                                ]
+                            ) for chapter in chapters
+                        ]
                     ]
                 ) for key, chapters in chapters.items()
             ],
