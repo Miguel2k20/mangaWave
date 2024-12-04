@@ -35,7 +35,7 @@ class MangaApiClient:
                 "translatedLanguage[]": ["pt-br"],
                 "order[volume]": "asc",
                 "order[chapter]": "asc",
-                "limit": 100,
+                "limit": 50,
                 "offset": offset
             },
         )

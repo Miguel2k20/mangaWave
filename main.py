@@ -1,6 +1,6 @@
 import flet as ft
 from pages.homePage import main as home_page
-from pages.ChapterVolumeListTemplate import main as manga_get_page
+from pages.MangaList import main as manga_get_page
 from pages.MangachaptersPage import main as manga_list_page
 
 

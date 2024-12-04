@@ -13,15 +13,58 @@ def main(page: ft.Page, idManga):
         visible=True
     )
 
-    resultschapters = ft.Row(
-        controls=[],
-        wrap=True,
+    resultschapters = ft.Container(
+        content=ft.Column(
+            controls=[], 
+        ),
         visible=False,
-        scroll=ft.ScrollMode.AUTO,
-        height=0.7 * page.window_height
+        height=0.7 * page.window_height,
+        width=page.window_width
     )
-    
+
     mangaChapters = MangaApiClient.getMangaList(idManga)
+
+    def printResult(mangas):
+        progressRow.visible = False
+
+        chapters = mangas['data']
+
+        resultschapters.content = ft.Column(
+            controls=[
+                ft.Column(
+                    controls=[
+                        
+                        ft.Text(
+                            value=f"Volume: {key}", 
+                            size=24, 
+                            weight="bold"
+                        ),
+
+                        ft.Column(
+                            controls=[
+                                ft.Text(
+                                    value=f"Cap {chapter['attributes']['chapter']}",
+                                    size=12
+                                ),
+                                ft.Text(
+                                    value=f"Captiulo {chapter['attributes']['title']}",
+                                    size=15
+                                ) 
+                            ]
+                        ) for chapter in chapters
+                    ]
+                ) for key, chapters in chapters.items()
+            ],
+            scroll=ft.ScrollMode.AUTO
+        )
+
+        resultschapters.visible = True
+        page.update()
+
+    if mangaChapters:
+        printResult(mangaChapters)
+    
+    print(json.dumps(mangaChapters, indent=4))
 
     page.views.append(
         ft.View(
@@ -34,7 +77,7 @@ def main(page: ft.Page, idManga):
                         on_click=lambda _: page.go('/mangas-get'),
                     ),
                 ),
-                ft.Text(value='Naruto!', size=30),
+                # ft.Text(value='Naruto!', size=30),
                 progressRow,
                 resultschapters
             ],
