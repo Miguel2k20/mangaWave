@@ -35,8 +35,39 @@ def main(page: ft.Page, idManga):
         for vol_num in sorted(volumes.keys(), key=lambda x: int(x)):
             
             chapters = volumes[vol_num]
+            chapter_column = ft.Column()
 
-            # Div pai dos volumes
+            # For loop dos capitulos
+            for chapter in chapters:
+                chapter_column.controls.append(
+                    ft.Container(
+                        content=ft.Row(
+                            controls=[
+                                ft.Row([
+                                    ft.IconButton(
+                                        icon=ft.icons.PICTURE_AS_PDF,
+                                        tooltip=f"Baixar capítulo {chapter['attributes']['chapter']} em formato PDF"
+                                    ),
+                                    ft.IconButton(
+                                        icon=ft.icons.MENU_BOOK,
+                                        tooltip=f"Baixar capítulo {chapter['attributes']['chapter']} em formato Mobi"
+                                    ),
+                                ]),
+                                ft.Column([
+                                    ft.ListTile(
+                                        title=ft.Text(f"Capítulo {chapter['attributes']['chapter']}"),
+                                        subtitle=ft.Text(chapter['attributes']['title'] or "Sem título"),
+                                    ),
+                                ]),
+                            ],
+                            alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+                        ),
+                        bgcolor="#3d444d",
+                        padding=ft.padding.symmetric(horizontal=10),
+                        border_radius=10,
+                    )
+                )
+            # Container de cada volume
             volume_container = ft.Container(
                 content=ft.Column([
                     ft.Row(
@@ -45,7 +76,6 @@ def main(page: ft.Page, idManga):
                                 f"Volume {vol_num}",
                                 size=20, 
                             ),
-
                             ft.Row([
                                 ft.IconButton(
                                     icon=ft.icons.PICTURE_AS_PDF,
@@ -55,34 +85,17 @@ def main(page: ft.Page, idManga):
                                     icon=ft.icons.MENU_BOOK,
                                     tooltip=f"Baixar Volume {vol_num} em formato Mobi"
                                 ),
-                            ])
+                            ]),
                         ],
                         alignment=ft.MainAxisAlignment.SPACE_BETWEEN
                     ),
-                    # Container dos capitulos
-                    ft.Container(
-                        content=ft.Column(
-                            controls=[
-                                ft.Row([
-                                    ft.Column([
-                                        ft.Text(
-                                            f"Capítulo {chapter['attributes']['chapter']}",
-                                            size=10, 
-                                        ),
-                                        ft.Text(
-                                            f"Titulo: {chapter['attributes']['title'] or "Sem título"}",
-                                            size=12, 
-                                        )
-                                    ])
-                                ]) for chapter in chapters
-                            ],
-                        ),
-                    ),
-
-                    ft.Divider(height=1),
-                ]) 
+                    chapter_column, #Aqui eu add o capitulos que eu tinha passado anteriormente
+                    ft.Divider(height=1)
+                ]),
+                margin=ft.margin.only(bottom=5),
             )
             main_column.controls.append(volume_container)
+
 
         resultschapters.content = main_column
         resultschapters.visible = True
