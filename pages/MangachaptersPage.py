@@ -26,38 +26,65 @@ def main(page: ft.Page, idManga):
 
     def printResult(mangas):
         progressRow.visible = False
+        
+        volumes = mangas['data']
 
-        chapters = mangas['data']
+        main_column = ft.Column(scroll=ft.ScrollMode.AUTO)
 
-        resultschapters.content = ft.Column(
-            controls=[
-                ft.Column(
-                    controls=[
-                        
-                        ft.Text(
-                            value=f"Volume: {key}", 
-                            size=24, 
-                            weight="bold"
-                        ),
+        # Primeiro for loop é referente aos volumes 
+        for vol_num in sorted(volumes.keys(), key=lambda x: int(x)):
+            
+            chapters = volumes[vol_num]
 
-                        ft.Column(
-                            controls=[
-                                ft.Text(
-                                    value=f"Cap {chapter['attributes']['chapter']}",
-                                    size=12
+            # Div pai dos volumes
+            volume_container = ft.Container(
+                content=ft.Column([
+                    ft.Row(
+                        controls=[
+                            ft.Text(
+                                f"Volume {vol_num}",
+                                size=20, 
+                            ),
+
+                            ft.Row([
+                                ft.IconButton(
+                                    icon=ft.icons.PICTURE_AS_PDF,
+                                    tooltip=f"Baixar Volume {vol_num} em formato PDF"
                                 ),
-                                ft.Text(
-                                    value=f"Captiulo {chapter['attributes']['title']}",
-                                    size=15
-                                ) 
-                            ]
-                        ) for chapter in chapters
-                    ]
-                ) for key, chapters in chapters.items()
-            ],
-            scroll=ft.ScrollMode.AUTO
-        )
+                                ft.IconButton(
+                                    icon=ft.icons.MENU_BOOK,
+                                    tooltip=f"Baixar Volume {vol_num} em formato Mobi"
+                                ),
+                            ])
+                        ],
+                        alignment=ft.MainAxisAlignment.SPACE_BETWEEN
+                    ),
+                    # Container dos capitulos
+                    ft.Container(
+                        content=ft.Column(
+                            controls=[
+                                ft.Row([
+                                    ft.Column([
+                                        ft.Text(
+                                            f"Capítulo {chapter['attributes']['chapter']}",
+                                            size=10, 
+                                        ),
+                                        ft.Text(
+                                            f"Titulo: {chapter['attributes']['title'] or "Sem título"}",
+                                            size=12, 
+                                        )
+                                    ])
+                                ]) for chapter in chapters
+                            ],
+                        ),
+                    ),
 
+                    ft.Divider(height=1),
+                ]) 
+            )
+            main_column.controls.append(volume_container)
+
+        resultschapters.content = main_column
         resultschapters.visible = True
         page.update()
 
