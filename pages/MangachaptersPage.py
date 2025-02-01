@@ -32,16 +32,22 @@ def main(page: ft.Page, idManga):
         processed_chapters = []
 
         # Primeiro for loop é referente aos volumes 
-        for vol_num in sorted(volumes.keys(), key=lambda x: int(x)):
+        def custom_sort_key(key):
+            if key.isdigit():
+                return int(key)
+            else:
+                return float('inf')
+
+        for vol_num in sorted(volumes.keys(), key=custom_sort_key):
             chapters = volumes[vol_num]
             chapter_column = ft.Column()
             capters_id = []
 
             # For loop dos capítulos
             for chapter in chapters:
+                # Evita repetição de capítulos de grupos diferentes
                 chapter_volume = chapter['attributes']['volume']
                 chapter_number = chapter['attributes']['chapter']
-
                 if (chapter_volume, chapter_number) in processed_chapters:
                     continue 
                 
@@ -83,7 +89,7 @@ def main(page: ft.Page, idManga):
                     ft.Row(
                         controls=[
                             ft.Text(
-                                f"Volume {vol_num}",
+                                f"Volume - {vol_num}",
                                 size=20, 
                             ),
                             ft.Row([
