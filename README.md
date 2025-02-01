@@ -39,7 +39,7 @@ sudo ln -s /usr/lib/x86_64-linux-gnu/libmpv.so /usr/lib/libmpv.so.1
 4. Execute o projeto:
 
 ```sh
-python main.py
+flet run main.py -r
 ```
 
 ### Windows

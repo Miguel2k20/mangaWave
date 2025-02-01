@@ -29,7 +29,7 @@ def main(page: ft.Page):
         wrap=True,
         visible=False,
         scroll=ft.ScrollMode.AUTO,
-        height=0.7 * page.window_height
+        height=0.7 * page.height  # Corrigido aqui
     )
 
     def getMangaList(offset=0):
@@ -64,13 +64,13 @@ def main(page: ft.Page):
             ft.Container(
                 on_click=lambda e, index=index: goToList(index),
                 content=ft.Column([
-                    ft.Image(src=manga['cover_art'], width=0.20 * page.window_width, height=300),
+                    ft.Image(src=manga['cover_art'], width=0.20 * page.width, height=300),  # Corrigido aqui
                     ft.Text(manga['title'], size=18),
                     ft.Text(f"Idiomas Disponiveis: {', '.join([lang for lang in manga['lenguangesEnsabled'] if lang in ['en', 'pt-br']])}", size=14)
                 ], 
                 alignment="center", horizontal_alignment="center"),
                 padding=10,
-                width=0.32 * page.window_width,
+                width=0.32 * page.width,  # Corrigido aqui
                 height=450,
                 border_radius=10,
                 bgcolor="#3d444d"
@@ -107,7 +107,7 @@ def main(page: ft.Page):
                     controls=[
                         ft.Container(
                             content=inputManga,
-                            width=0.4 * page.window_width,
+                            width=0.4 * page.width,  # Corrigido aqui
                         ),
                         ft.ElevatedButton(
                             text="Pesquisar", 
