@@ -1,6 +1,6 @@
 import flet as ft
 from controller.MangaApiClient import MangaApiClient
-import json
+from controller.Helpers import Helpers
 
 def main(page: ft.Page, idManga):
 
@@ -23,13 +23,20 @@ def main(page: ft.Page, idManga):
 
     mangaChapters = MangaApiClient.getMangaList(idManga)
 
-    def printResult(mangas):
+    def navegatePaginate(page_number, mangaData):
+        offset = (page_number - 1) * mangaData['limit']
+        mangaChapters = MangaApiClient.getMangaList(idManga, offset)
+        printResult(mangaChapters, page_number)  # Passa o número da página atual
+
+    def printResult(mangas, current_page=1):  # Adiciona current_page como parâmetro
         progressRow.visible = False
         
         volumes = mangas['data']
 
         main_column = ft.Column(scroll=ft.ScrollMode.AUTO)
         processed_chapters = []
+
+        paginate = Helpers.paginateGenerate(mangas['total'], mangas['limit'], mangas['offset'])
 
         # Primeiro for loop é referente aos volumes 
         def custom_sort_key(key):
@@ -77,7 +84,7 @@ def main(page: ft.Page, idManga):
                             ],
                             alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
                         ),
-                        bgcolor="#3d444d",
+                        bgcolor=ft.Colors.GREY_900,  # Usando a nova enumeração Colors
                         padding=ft.padding.symmetric(horizontal=10),
                         border_radius=10,
                     )
@@ -112,6 +119,24 @@ def main(page: ft.Page, idManga):
             )
             main_column.controls.append(volume_container)
 
+        if paginate and paginate[0] != paginate[1]:
+            buttonsPage = [
+                ft.ElevatedButton(
+                    text=str(pageNumber),
+                    on_click=lambda e, page_number=pageNumber: navegatePaginate(page_number, mangas),
+                    style=ft.ButtonStyle(
+                        bgcolor=ft.Colors.BLUE if pageNumber == current_page else ft.Colors.GREY,  
+                        color=ft.Colors.WHITE if pageNumber == current_page else ft.Colors.BLACK
+                    )
+                ) for pageNumber in range(paginate[0], paginate[1] + 1)
+            ]
+            main_column.controls.append(
+                ft.Row(
+                    controls=buttonsPage,
+                    alignment=ft.MainAxisAlignment.CENTER  # Centraliza os botões de paginação
+                )
+            )
+
         resultschapters.content = main_column
         resultschapters.visible = True
         page.update()
@@ -119,8 +144,6 @@ def main(page: ft.Page, idManga):
     if mangaChapters:
         printResult(mangaChapters)
     
-    # print(json.dumps(mangaChapters, indent=4))
-
     page.views.append(
         ft.View(
             route='/manga-list-page',

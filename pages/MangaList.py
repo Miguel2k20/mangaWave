@@ -39,7 +39,7 @@ def main(page: ft.Page):
 
         mangaData = MangaApiClient.getManga(inputManga.value, offset)
         if mangaData:
-            printResult(inputManga.value, mangaData)
+            printResult(inputManga.value, mangaData, (offset // mangaData['limit']) + 1)  # Passa a página atual
         else:
             pageTitle.value = f"Resultado de {inputManga.value}"
 
@@ -56,7 +56,7 @@ def main(page: ft.Page):
         page.go(route)
         
 
-    def printResult(title, result):
+    def printResult(title, result, current_page=1):  # Adiciona current_page como parâmetro
         pageTitle.value = f"Resultado de {title} ({result['total']} resultado{'s' if result['total'] > 1 else ''})"
         paginate = Helpers.paginateGenerate(result['total'], result['limit'], result['offset'])
 
@@ -81,16 +81,22 @@ def main(page: ft.Page):
             buttonsPage = [
                 ft.ElevatedButton(
                     text=str(pageNumber),
-                    on_click=lambda e, page_number=pageNumber: navegatePaginate(page_number, result) 
+                    on_click=lambda e, page_number=pageNumber: navegatePaginate(page_number, result),
+                    style=ft.ButtonStyle(
+                        bgcolor=ft.Colors.BLUE if pageNumber == current_page else ft.Colors.GREY,  
+                        color=ft.Colors.WHITE if pageNumber == current_page else ft.Colors.BLACK
+                    )
                 ) for pageNumber in range(paginate[0], paginate[1] + 1)
             ]
             resultsManga.controls.append(
                 ft.Row(
-                    controls=buttonsPage
+                    controls=buttonsPage,
+                    alignment=ft.MainAxisAlignment.CENTER  # Centraliza os botões de paginação
                 )
             )
 
         resultsManga.visible = True
+        page.update()
 
     page.views.append(
         ft.View(
