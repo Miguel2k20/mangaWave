@@ -1,6 +1,7 @@
 import flet as ft
 from controller.MangaApiClient import MangaApiClient
 from controller.Helpers import Helpers
+from controller.CreateFile import CreateFile
 
 def main(page: ft.Page, idManga):
 
@@ -22,6 +23,9 @@ def main(page: ft.Page, idManga):
     )
 
     mangaChapters = MangaApiClient.getMangaList(idManga)
+
+    def downloadChapterPdf(mangaChapter):
+        CreateFile.pasteCreate(mangaChapter)
 
     def navegatePaginate(page_number, mangaData):
         offset = (page_number - 1) * mangaData['limit']
@@ -68,7 +72,8 @@ def main(page: ft.Page, idManga):
                                 ft.Row([
                                     ft.IconButton(
                                         icon=ft.Icons.PICTURE_AS_PDF,
-                                        tooltip=f"Baixar capítulo {chapter['attributes']['chapter']} em formato PDF"
+                                        tooltip=f"Baixar capítulo {chapter['attributes']['chapter']} em formato PDF",
+                                        on_click=lambda e, chapter=chapter: downloadChapterPdf(chapter)
                                     ),
                                     ft.IconButton(
                                         icon=ft.Icons.MENU_BOOK,
@@ -149,7 +154,7 @@ def main(page: ft.Page, idManga):
             route='/manga-list-page',
             controls=[
                 ft.AppBar(
-                    title=ft.Text('MangaWave - Buscar Manga'),
+                    title=ft.Text('MangaWave - Nome do Manga foda-se'),
                     leading=ft.IconButton(
                         icon="ARROW_BACK_IOS",
                         on_click=lambda _: page.go('/mangas-get'),

@@ -16,34 +16,31 @@ class CreateFile:
     @staticmethod
     def pasteCreate(mangaObject):
         
-        diretoryManga = os.path.join(desktop_path, mangaObject)
-
+        diretoryManga = os.path.join(desktop_path, mangaObject['diretory'])
+        idManga = mangaObject['id']
         if not os.path.exists(diretoryManga):   
             os.makedirs(diretoryManga)
-            CreateFile.downloadMangasPages(diretoryManga)
-            response = "Mangá está pronto! Boa leitura"
-        else:
-            while True:
-                clientResponse = input("Já existe um mangá relacionado, deseja deleta-lo para baixar o atual? Y or N: ")
-                match clientResponse.lower():
-                    case "y":
-                        shutil.rmtree(diretoryManga)
-                        os.makedirs(diretoryManga)
-                        CreateFile.downloadMangasPages(diretoryManga)
-                        response = "Mangá está pronto! Boa leitura"
-                        break
-                    case "n":
-                        response = "Mangá está pronto! Boa leitura"
-                        break
-                    case _:
-                        print("Resposta inválida. Por favor, responda apenas com 'Y' ou 'N'.")
+            CreateFile.downloadMangasPages(diretoryManga, idManga)
+        # else:
+        #     while True:
+        #         clientResponse = input("Já existe um mangá relacionado, deseja deleta-lo para baixar o atual? Y or N: ")
+        #         match clientResponse.lower():
+        #             case "y":
+        #                 shutil.rmtree(diretoryManga)
+        #                 os.makedirs(diretoryManga)
+        #                 CreateFile.downloadMangasPages(diretoryManga)
+        #                 break
+        #             case "n":
+        #                 break
+        #             case _:
+        #                 print("Resposta inválida. Por favor, responda apenas com 'Y' ou 'N'.")
 
-        return response
+        return True
     
     @staticmethod
-    def downloadMangasPages(path):
+    def downloadMangasPages(path, idManga):
 
-        urlList = MangaApiClient.getMangasPages("852b134e-d94d-46e4-b58b-44bb422b8642")
+        urlList = MangaApiClient.getMangasPages(idManga)
         
         for index, item in enumerate(urlList, start=1):
             try:
@@ -68,7 +65,7 @@ class CreateFile:
             pdfOutputDirectory  = os.path.join(desktop_path, path.split('/')[0], path.split('/')[1], "pdfs", path.split('/')[4])
 
             if not os.path.exists(pdfOutputDirectory ):
-                os.makedirs(pdfOutputDirectory )
+                os.makedirs(pdfOutputDirectory)
        
             pdfFilePath = os.path.join(pdfOutputDirectory, pdfName)
 
