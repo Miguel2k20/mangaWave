@@ -90,7 +90,7 @@ def main(page: ft.Page, idManga):
                                         tooltip=f"Baixar capítulo {chapter['attributes']['chapter']} em formato Mobi"
                                     ),
                                     ft.IconButton(
-                                        icon=ft.Icons.MENU_BOOK,
+                                        icon=ft.Icons.IMAGE,
                                         tooltip=f"Baixar as imagens do capítulo {chapter['attributes']['chapter']} separadamente",
                                         on_click=lambda e, chapter=chapter: downloadManga(chapter, 'JPG')
                                     ),
