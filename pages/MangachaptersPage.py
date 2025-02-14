@@ -24,8 +24,18 @@ def main(page: ft.Page, idManga):
 
     mangaChapters = MangaApiClient.getMangaList(idManga)
 
-    def downloadChapterPdf(mangaChapter):
-        CreateFile.pasteCreate(mangaChapter)
+    def downloadManga(mangaChapter, type):
+
+        match type:
+            case 'PDF':
+                print("Ainda paixin")
+            case 'MOBI':
+                print("Ainda paixin")
+            case 'JPG':
+                CreateFile.pasteCreate(mangaChapter)
+                
+
+
 
     def navegatePaginate(page_number, mangaData):
         offset = (page_number - 1) * mangaData['limit']
@@ -73,11 +83,16 @@ def main(page: ft.Page, idManga):
                                     ft.IconButton(
                                         icon=ft.Icons.PICTURE_AS_PDF,
                                         tooltip=f"Baixar capítulo {chapter['attributes']['chapter']} em formato PDF",
-                                        on_click=lambda e, chapter=chapter: downloadChapterPdf(chapter)
+                                        on_click=lambda e, chapter=chapter: downloadManga(chapter, 'PDF')
+                                    ),
+                                    ft.IconButton(
+                                        icon=ft.Icons.TABLET_ANDROID,
+                                        tooltip=f"Baixar capítulo {chapter['attributes']['chapter']} em formato Mobi"
                                     ),
                                     ft.IconButton(
                                         icon=ft.Icons.MENU_BOOK,
-                                        tooltip=f"Baixar capítulo {chapter['attributes']['chapter']} em formato Mobi"
+                                        tooltip=f"Baixar as imagens do capítulo {chapter['attributes']['chapter']} separadamente",
+                                        on_click=lambda e, chapter=chapter: downloadManga(chapter, 'JPG')
                                     ),
                                 ]),
                                 ft.Column([
