@@ -18,82 +18,91 @@ def main(page: ft.Page, idManga):
             controls=[], 
         ),
         visible=False,
-        height=0.7 * page.height,  # Substituído por page.height
-        width=page.width  # Substituído por page.width
+        height=0.7 * page.height,
+        width=page.width
     )
 
     mangaChapters = MangaApiClient.getMangaList(idManga)
 
-    def downloadManga(mangaChapter, type):
+    # Dicionário para armazenar o estado do ícone de cada botão
+    icons_state = {}
+
+    def downloadManga(mangaChapter, type, icon_button):
+        icon_button.icon = ft.Icons.HOURGLASS_TOP
+        page.update()
 
         match type:
             case 'PDF':
                 print("Ainda paixin")
+                success = False  # Simula falha
             case 'MOBI':
                 print("Ainda paixin")
+                success = False  # Simula falha
             case 'JPG':
-                CreateFile.pasteCreate(mangaChapter)
-                
+                success = CreateFile.pasteCreate(mangaChapter) 
 
-
+        if success:
+            icon_button.icon = ft.Icons.CHECK_CIRCLE
+        else:
+            icon_button.icon = ft.Icons.TABLET_ANDROID  
+        page.update()
 
     def navegatePaginate(page_number, mangaData):
         offset = (page_number - 1) * mangaData['limit']
         mangaChapters = MangaApiClient.getMangaList(idManga, offset)
-        printResult(mangaChapters, page_number)  # Passa o número da página atual
+        printResult(mangaChapters, page_number)
 
-    def printResult(mangas, current_page=1):  # Adiciona current_page como parâmetro
+    def printResult(mangas, current_page=1):
         progressRow.visible = False
-        
         volumes = mangas['data']
-
         main_column = ft.Column(scroll=ft.ScrollMode.AUTO)
         processed_chapters = []
-
         paginate = Helpers.paginateGenerate(mangas['total'], mangas['limit'], mangas['offset'])
 
-        # Primeiro for loop é referente aos volumes 
         def custom_sort_key(key):
-            if key.isdigit():
-                return int(key)
-            else:
-                return float('inf')
+            return int(key) if key.isdigit() else float('inf')
 
         for vol_num in sorted(volumes.keys(), key=custom_sort_key):
             chapters = volumes[vol_num]
             chapter_column = ft.Column()
             capters_id = []
 
-            # For loop dos capítulos
             for chapter in chapters:
-                # Evita repetição de capítulos de grupos diferentes
                 chapter_volume = chapter['attributes']['volume']
                 chapter_number = chapter['attributes']['chapter']
                 if (chapter_volume, chapter_number) in processed_chapters:
                     continue 
-                
-                processed_chapters.append((chapter_volume, chapter_number, ))
+
+                processed_chapters.append((chapter_volume, chapter_number))
                 capters_id.append(chapter['id'])
+
+                # Cria os botões antes de usá-los no lambda
+                pdf_button = ft.IconButton(
+                    icon=ft.Icons.PICTURE_AS_PDF,
+                    tooltip=f"Baixar capítulo {chapter['attributes']['chapter']} em formato PDF"
+                )
+                mobi_button = ft.IconButton(
+                    icon=ft.Icons.TABLET_ANDROID,
+                    tooltip=f"Baixar capítulo {chapter['attributes']['chapter']} em formato Mobi"
+                )
+                jpg_button = ft.IconButton(
+                    icon=ft.Icons.IMAGE,
+                    tooltip=f"Baixar as imagens do capítulo {chapter['attributes']['chapter']} separadamente"
+                )
+
+                # Define os eventos de clique após a criação dos botões
+                pdf_button.on_click = lambda e, chapter=chapter, button=pdf_button: downloadManga(chapter, 'PDF', button)
+                mobi_button.on_click = lambda e, chapter=chapter, button=mobi_button: downloadManga(chapter, 'MOBI', button)
+                jpg_button.on_click = lambda e, chapter=chapter, button=jpg_button: downloadManga(chapter, 'JPG', button)
 
                 chapter_column.controls.append(
                     ft.Container(
                         content=ft.Row(
                             controls=[
                                 ft.Row([
-                                    ft.IconButton(
-                                        icon=ft.Icons.PICTURE_AS_PDF,
-                                        tooltip=f"Baixar capítulo {chapter['attributes']['chapter']} em formato PDF",
-                                        on_click=lambda e, chapter=chapter: downloadManga(chapter, 'PDF')
-                                    ),
-                                    ft.IconButton(
-                                        icon=ft.Icons.TABLET_ANDROID,
-                                        tooltip=f"Baixar capítulo {chapter['attributes']['chapter']} em formato Mobi"
-                                    ),
-                                    ft.IconButton(
-                                        icon=ft.Icons.IMAGE,
-                                        tooltip=f"Baixar as imagens do capítulo {chapter['attributes']['chapter']} separadamente",
-                                        on_click=lambda e, chapter=chapter: downloadManga(chapter, 'JPG')
-                                    ),
+                                    pdf_button, 
+                                    mobi_button, 
+                                    jpg_button
                                 ]),
                                 ft.Column([
                                     ft.ListTile(
@@ -104,21 +113,17 @@ def main(page: ft.Page, idManga):
                             ],
                             alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
                         ),
-                        bgcolor=ft.Colors.GREY_900,  # Usando a nova enumeração Colors
+                        bgcolor=ft.Colors.GREY_900,
                         padding=ft.padding.symmetric(horizontal=10),
                         border_radius=10,
                     )
                 )
 
-            # Container de cada volume
             volume_container = ft.Container(
                 content=ft.Column([
                     ft.Row(
                         controls=[
-                            ft.Text(
-                                f"Volume - {vol_num}",
-                                size=20, 
-                            ),
+                            ft.Text(f"Volume - {vol_num}", size=20),
                             ft.Row([
                                 ft.IconButton(
                                     icon=ft.Icons.PICTURE_AS_PDF,
@@ -132,7 +137,7 @@ def main(page: ft.Page, idManga):
                         ],
                         alignment=ft.MainAxisAlignment.SPACE_BETWEEN
                     ),
-                    chapter_column,  # Aqui eu adiciono os capítulos que foram processados anteriormente
+                    chapter_column,
                     ft.Divider(height=1)
                 ]),
                 margin=ft.margin.only(bottom=5),
@@ -153,7 +158,7 @@ def main(page: ft.Page, idManga):
             main_column.controls.append(
                 ft.Row(
                     controls=buttonsPage,
-                    alignment=ft.MainAxisAlignment.CENTER  # Centraliza os botões de paginação
+                    alignment=ft.MainAxisAlignment.CENTER
                 )
             )
 
