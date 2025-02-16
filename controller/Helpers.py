@@ -112,6 +112,7 @@ class Helpers:
 
         for manga in mangalist["data"]:
             manga["diretory"] = f"MangaWave/{mangatitle}/volume{manga['attributes']['volume']}/chapter{manga['attributes']['chapter']}/language-{manga['attributes']['translatedLanguage']}"
+            manga["diretory_temp"] = f"MangaWave/temp/{mangatitle}/volume{manga['attributes']['volume']}/chapter{manga['attributes']['chapter']}/language-{manga['attributes']['translatedLanguage']}"
         
         return mangalist
     

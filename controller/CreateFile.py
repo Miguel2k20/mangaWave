@@ -38,45 +38,48 @@ class CreateFile:
                     print(f"Image saved to {path}/{mangaPageName}")
             except requests.RequestException as e:
                 print(f"Failed to download {savePath}: {e}")
+                return False
+        
+        return True
 
     @staticmethod
     def pdfGenerator(mangaObject):
-
         diretory = mangaObject['diretory']
         mangaDirectory = os.path.join(desktop_path, diretory) 
+        tempDiretory = None
 
         if not os.path.exists(mangaDirectory):
-            
-            # CreateFile.downloadMangasPages()
-            print(diretory)
-            return True
+            idManga = mangaObject['id']
+            tempDiretory_path = mangaObject.get('diretory_temp')
+            if not tempDiretory_path:
+                return False
+
+            tempDiretory = os.path.join(desktop_path, tempDiretory_path) 
+
+            os.makedirs(tempDiretory)
+
+            if not CreateFile.downloadMangasPages(tempDiretory, idManga):
+                return False
+
+            mangaDirectory = tempDiretory
 
         if os.path.exists(mangaDirectory):
-        
             pdfName = f"{diretory.split('/')[1]}-{diretory.split('/')[2]}-{diretory.split('/')[3]}.pdf"
-            pdfOutputDirectory  = os.path.join(desktop_path, diretory.split('/')[0], diretory.split('/')[1], "pdfs", diretory.split('/')[4])
+            pdfOutputDirectory = os.path.join(desktop_path, diretory.split('/')[0], diretory.split('/')[1], "pdfs", diretory.split('/')[4])
 
-            if not os.path.exists(pdfOutputDirectory ):
-                os.makedirs(pdfOutputDirectory)
-       
+            if not os.path.exists(pdfOutputDirectory):
+                os.makedirs(pdfOutputDirectory, exist_ok=True)
+
             pdfFilePath = os.path.join(pdfOutputDirectory, pdfName)
 
             if os.path.isfile(pdfFilePath):
+                os.remove(pdfFilePath)
 
-                while True:
-                    clientResponse = input(f"O PDF {pdfName} já existe, deseja gerar novamente? Y or N: ")
-                    match clientResponse.lower():
-                        case "y":
-                            os.remove(pdfFilePath)
-                            break
-                        case "n":
-                            print("Não criou uma nova")
-                            return f"Boa leitura! Lembrando que seu pdf está em {pdfFilePath}"
-                        case _:
-                            print("Resposta inválida. Por favor, responda apenas com 'Y' ou 'N'.")
-                        
-            filesManga = sorted(os.listdir(mangaDirectory), key=lambda x: int(x.split("-")[1].split(".")[0]))
-            
+            filesManga = sorted(
+                [f for f in os.listdir(mangaDirectory) if os.path.isfile(os.path.join(mangaDirectory, f))],
+                key=lambda x: int(x.split("-")[1].split(".")[0])
+            )
+
             filesManga = [
                 os.path.join(mangaDirectory, item) 
                 for item in filesManga
@@ -87,9 +90,10 @@ class CreateFile:
             images[0].save(
                 pdfFilePath, "PDF", resolution=100.0, save_all=True, append_images=images[1:]
             )
-            
-            return f"PDF gerado em {pdfFilePath}"
-        
+
+        if tempDiretory:
+            shutil.rmtree(tempDiretory)
+
         return True
     
     @staticmethod
