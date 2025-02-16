@@ -40,14 +40,21 @@ class CreateFile:
                 print(f"Failed to download {savePath}: {e}")
 
     @staticmethod
-    def pdfGenerator(path):
+    def pdfGenerator(mangaObject):
 
-        mangaDirectory = os.path.join(desktop_path, path) 
+        diretory = mangaObject['diretory']
+        mangaDirectory = os.path.join(desktop_path, diretory) 
+
+        if not os.path.exists(mangaDirectory):
+            
+            # CreateFile.downloadMangasPages()
+            print(diretory)
+            return True
 
         if os.path.exists(mangaDirectory):
         
-            pdfName = f"{path.split('/')[1]}-{path.split('/')[2]}-{path.split('/')[3]}.pdf"
-            pdfOutputDirectory  = os.path.join(desktop_path, path.split('/')[0], path.split('/')[1], "pdfs", path.split('/')[4])
+            pdfName = f"{diretory.split('/')[1]}-{diretory.split('/')[2]}-{diretory.split('/')[3]}.pdf"
+            pdfOutputDirectory  = os.path.join(desktop_path, diretory.split('/')[0], diretory.split('/')[1], "pdfs", diretory.split('/')[4])
 
             if not os.path.exists(pdfOutputDirectory ):
                 os.makedirs(pdfOutputDirectory)
@@ -83,8 +90,7 @@ class CreateFile:
             
             return f"PDF gerado em {pdfFilePath}"
         
-        else:
-            return "Diretório não encontrado"
+        return True
     
     @staticmethod
     def mobiGenerator(path):

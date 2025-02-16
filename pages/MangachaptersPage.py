@@ -24,17 +24,15 @@ def main(page: ft.Page, idManga):
 
     mangaChapters = MangaApiClient.getMangaList(idManga)
 
-    # Dicionário para armazenar o estado do ícone de cada botão
-    icons_state = {}
-
     def downloadManga(mangaChapter, type, icon_button):
         icon_button.icon = ft.Icons.HOURGLASS_TOP
         page.update()
 
         match type:
             case 'PDF':
-                print("Ainda paixin")
-                success = False  # Simula falha
+                CreateFile.pdfGenerator(mangaChapter) 
+                success = False
+                # success = CreateFile.pdfGenerator(mangaChapter) 
             case 'MOBI':
                 print("Ainda paixin")
                 success = False  # Simula falha
@@ -44,7 +42,7 @@ def main(page: ft.Page, idManga):
         if success:
             icon_button.icon = ft.Icons.CHECK_CIRCLE
         else:
-            icon_button.icon = ft.Icons.TABLET_ANDROID  
+            icon_button.icon = ft.Icons.ERROR  
         page.update()
 
     def navegatePaginate(page_number, mangaData):

@@ -2,6 +2,7 @@ import requests
 import math
 from PIL import Image
 from collections import defaultdict
+import re
 
 base_url = "https://api.mangadex.org"
 base_image_url = "https://uploads.mangadex.org"
@@ -107,6 +108,7 @@ class Helpers:
         ]
 
         mangatitle = mangatitle[0].json()['data']['attributes']['title']['en'].lower()
+        mangatitle = re.sub(r'[^a-z0-9\s]', '', mangatitle)
 
         for manga in mangalist["data"]:
             manga["diretory"] = f"MangaWave/{mangatitle}/volume{manga['attributes']['volume']}/chapter{manga['attributes']['chapter']}/language-{manga['attributes']['translatedLanguage']}"
