@@ -3,6 +3,7 @@ import math
 from PIL import Image
 from collections import defaultdict
 import re
+import os
 
 base_url = "https://api.mangadex.org"
 base_image_url = "https://uploads.mangadex.org"
@@ -146,3 +147,14 @@ class Helpers:
         endPage = min(Totalpages, atualPage + 8)
 
         return [startPage, endPage]
+    
+    @staticmethod
+    def clearJpgGarbage(diretory):
+        permitted_extensions = {'.mobi', '.pdf'}
+        for file in os.listdir(diretory):
+            diretory_file = os.path.join(diretory,file)
+            if os.path.isfile(diretory_file):
+                extension = os.path.splitext(file)[1].lower()
+                if extension not in permitted_extensions:
+                    os.remove(diretory_file)
+                    
