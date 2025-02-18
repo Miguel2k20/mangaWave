@@ -44,55 +44,56 @@ class CreateFile:
 
     @staticmethod
     def pdfGenerator(mangaObject):
+
         diretory = mangaObject['diretory']
+
         mangaDirectory = os.path.join(desktop_path, diretory) 
+
+        pdf_output_directory = os.path.join(desktop_path, diretory.split('/')[0], diretory.split('/')[1], "pdfs", diretory.split('/')[4])
+        
+        pdf_name = f"{diretory.split('/')[1]}-{diretory.split('/')[2]}-{diretory.split('/')[3]}.pdf"
+
         tempDiretory = None
 
-        if not os.path.exists(mangaDirectory):
-            idManga = mangaObject['id']
-            tempDiretory_path = mangaObject.get('diretory_temp')
-            if not tempDiretory_path:
-                return False
+        if os.path.exists(pdf_output_directory):
+            file_diretory = os.path.join(pdf_output_directory, pdf_name)
+            if os.path.exists(file_diretory):
+                os.remove(file_diretory)
 
+        if not os.path.exists(mangaDirectory):
+            
+            idManga = mangaObject['id']
+            tempDiretory_path = pdf_output_directory
             tempDiretory = os.path.join(desktop_path, tempDiretory_path) 
 
-            os.makedirs(tempDiretory)
+            os.makedirs(tempDiretory, exist_ok=True)
 
             if not CreateFile.downloadMangasPages(tempDiretory, idManga):
                 return False
 
             mangaDirectory = tempDiretory
+        
+        pdfFilePath = os.path.join(pdf_output_directory, pdf_name)
 
-        if os.path.exists(mangaDirectory):
-            pdfName = f"{diretory.split('/')[1]}-{diretory.split('/')[2]}-{diretory.split('/')[3]}.pdf"
-            pdfOutputDirectory = os.path.join(desktop_path, diretory.split('/')[0], diretory.split('/')[1], "pdfs", diretory.split('/')[4])
+        # Preciso resolver o erro aqui
+        filesManga = sorted(
+            [f for f in os.listdir(mangaDirectory) if os.path.isfile(os.path.join(mangaDirectory, f))],
+            key=lambda x: int(x.split("-")[1].split(".")[0])
+        )
 
-            if not os.path.exists(pdfOutputDirectory):
-                os.makedirs(pdfOutputDirectory, exist_ok=True)
+        filesManga = [
+            os.path.join(mangaDirectory, item) 
+            for item in filesManga
+        ]
 
-            pdfFilePath = os.path.join(pdfOutputDirectory, pdfName)
+        images = [Helpers.add_padding(Image.open(img), 50) for img in filesManga]
 
-            if os.path.isfile(pdfFilePath):
-                os.remove(pdfFilePath)
-
-            filesManga = sorted(
-                [f for f in os.listdir(mangaDirectory) if os.path.isfile(os.path.join(mangaDirectory, f))],
-                key=lambda x: int(x.split("-")[1].split(".")[0])
-            )
-
-            filesManga = [
-                os.path.join(mangaDirectory, item) 
-                for item in filesManga
-            ]
-
-            images = [Helpers.add_padding(Image.open(img), 50) for img in filesManga]
-
-            images[0].save(
-                pdfFilePath, "PDF", resolution=100.0, save_all=True, append_images=images[1:]
-            )
+        images[0].save(
+            pdfFilePath, "PDF", resolution=100.0, save_all=True, append_images=images[1:]
+        )
 
         if tempDiretory:
-            shutil.rmtree(tempDiretory)
+            Helpers.clearJpgGarbage(tempDiretory)
 
         return True
     
