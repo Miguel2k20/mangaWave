@@ -30,9 +30,7 @@ def main(page: ft.Page, idManga):
 
         match type:
             case 'PDF':
-                CreateFile.pdfGenerator(mangaChapter) 
-                success = False
-                # success = CreateFile.pdfGenerator(mangaChapter) 
+                success = CreateFile.pdfGenerator(mangaChapter) 
             case 'MOBI':
                 print("Ainda paixin")
                 success = False  # Simula falha
